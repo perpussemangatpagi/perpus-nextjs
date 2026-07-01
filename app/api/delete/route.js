@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request) {
   const token = process.env.GITHUB_PAT;
-  const repo = 'perpussemangatpagi/smpn1damai-nextjs'; // <-- Ganti ini bre!
+  const repo = 'perpussemangatpagi/perpus-nextjs'; // <-- Ganti ini bre!
   
   try {
     const { username, password, path, sha } = await request.json();
