@@ -125,7 +125,36 @@ export default function PerpusPage() {
             </div>
           </div>
         </section>
+{/* BERITA TERBARU */}
+        <section id="berita" className="section-card glass">
+          <h2 className="section-title">Berita & Info Terbaru</h2>
+          <div className="news-grid">
+            
+            {/* CONTOH KOTAK BERITA 1 */}
+            <div className="news-card">
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" />
+              <div className="news-content">
+                <div className="news-date">02 Juli 2026</div>
+                <h3 className="news-title">Kunjungan Asesor Akreditasi ke Perpustakaan</h3>
+                <p className="news-snippet">Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...</p>
+                {/* INI LINK SHAREABLE-NYA */}
+                <a href="/berita/kunjungan-asesor" className="btn-baca">Baca Selengkapnya</a>
+              </div>
+            </div>
 
+            {/* CONTOH KOTAK BERITA 2 */}
+            <div className="news-card">
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" />
+              <div className="news-content">
+                <div className="news-date">28 Juni 2026</div>
+                <h3 className="news-title">Penambahan Koleksi E-Book Baru</h3>
+                <p className="news-snippet">Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog Google Drive perpustakaan...</p>
+                <a href="/berita/koleksi-ebook-baru" className="btn-baca">Baca Selengkapnya</a>
+              </div>
+            </div>
+
+          </div>
+        </section>
         {/* STRUKTUR */}
         <section id="struktur" className="section-card glass">
           <h2 className="section-title">Struktur Organisasi</h2>
