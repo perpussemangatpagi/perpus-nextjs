@@ -25,7 +25,6 @@ export default function ClientPage() {
     }
   };
 
-  // Gaya Template untuk kotak-kotak Denah biar rapi dan seragam
   const ruangBaseStyle = {
     padding: '10px',
     borderRadius: '16px',
@@ -42,14 +41,18 @@ export default function ClientPage() {
   };
 
   return (
-    <div style={{ overflowX: 'hidden', width: '100vw', maxWidth: '100%' }}>
-      {/* HEADER */}
-      <header className="header-container glass">
+    // overflowX: 'hidden' DIHAPUS BIAR NAVBAR NGGAK MALES TURUN
+    <div style={{ width: '100vw', maxWidth: '100%' }}>
+      
+      {/* HEADER NAVBAR - DITAMBAHIN STICKY & FLEX WRAP BIAR SEARCH BAR PAS */}
+      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, flexWrap: 'wrap' }}>
+        
         <div className="nav-brand">
           <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
           <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
           <div className="title">Perpus SMPN 1 Damai</div>
         </div>
+
         <div className="nav-wrapper">
           {showLeftArrow && (
             <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex' }}>
@@ -74,6 +77,33 @@ export default function ClientPage() {
             </button>
           )}
         </div>
+
+        {/* ========================================= */}
+        {/* KOLOM SEARCH BARU DI BAGIAN BAWAH NAVBAR  */}
+        {/* ========================================= */}
+        <div style={{ width: '100%', marginTop: '15px', position: 'relative' }}>
+          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '1rem' }}></i>
+          <input 
+            type="text" 
+            placeholder="Cari buku / berita / info..." 
+            style={{ 
+              width: '100%', 
+              padding: '12px 20px 12px 45px', 
+              borderRadius: '25px', 
+              border: '2px solid rgba(255, 255, 255, 0.6)', 
+              background: 'rgba(255, 255, 255, 0.6)', 
+              outline: 'none', 
+              color: '#0f172a', 
+              fontWeight: '600', 
+              fontSize: '0.95rem',
+              boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.03), 0 4px 15px rgba(0,0,0,0.05)',
+              transition: 'all 0.3s ease'
+            }} 
+            onFocus={(e) => { e.target.style.background = 'rgba(255,255,255,0.9)'; e.target.style.borderColor = '#0ea5e9'; }}
+            onBlur={(e) => { e.target.style.background = 'rgba(255,255,255,0.6)'; e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)'; }}
+          />
+        </div>
+
       </header>
 
       {/* HERO */}
@@ -210,7 +240,7 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* DENAH RUANGAN - DIKUNCI FULL INLINE STYLE BIAR JADI PETA 100% */}
+        {/* DENAH RUANGAN */}
         <section id="denah" className="section-card glass">
           <h2 className="section-title">Denah Ruangan</h2>
           <p style={{ marginBottom: '2rem' }}>Tata letak fasilitas dan area koleksi perpustakaan Semangat Pagi:</p>
@@ -291,7 +321,7 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* KATALOG - UDAH DISAMAIN CLASS-NYA BIAR GAK TAJAM KOTAKNYA */}
+        {/* KATALOG */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog Digital</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto', color: '#1e293b', fontSize: '1rem', fontWeight: 500 }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
