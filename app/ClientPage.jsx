@@ -1,8 +1,7 @@
-// app/page.js
 'use client';
 import { useEffect, useRef, useState } from 'react';
 
-export default function PerpusPage() {
+export default function ClientPage() {
   const navRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -31,8 +30,8 @@ export default function PerpusPage() {
       {/* HEADER */}
       <header className="header-container glass">
         <div className="nav-brand">
-          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" />
-          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" />
+          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
+          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
           <div className="title">Perpus SMPN 1 Damai</div>
         </div>
         <div className="nav-wrapper">
@@ -46,6 +45,7 @@ export default function PerpusPage() {
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#profil">Profil</a></li>
               <li><a href="#info">Tata Tertib</a></li>
+              <li><a href="#berita">Berita</a></li>
               <li><a href="#struktur">Struktur</a></li>
               <li><a href="#denah">Denah</a></li>
               <li><a href="#galeri">Galeri</a></li>
@@ -63,8 +63,8 @@ export default function PerpusPage() {
       {/* HERO */}
       <header className="hero">
         <div className="hero-logos">
-          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" />
-          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpustakaan" />
+          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
+          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpustakaan" style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
         </div>
         <div className="npp-badge">NPP: 6407081D0000001</div>
         <h1>Semangat Pagi</h1>
@@ -125,26 +125,24 @@ export default function PerpusPage() {
             </div>
           </div>
         </section>
-{/* BERITA TERBARU */}
+
+        {/* BERITA TERBARU */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
           <div className="news-grid">
             
-            {/* CONTOH KOTAK BERITA 1 */}
             <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" />
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
               <div className="news-content">
                 <div className="news-date">02 Juli 2026</div>
                 <h3 className="news-title">Kunjungan Asesor Akreditasi ke Perpustakaan</h3>
                 <p className="news-snippet">Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...</p>
-                {/* INI LINK SHAREABLE-NYA */}
                 <a href="/berita/kunjungan-asesor" className="btn-baca">Baca Selengkapnya</a>
               </div>
             </div>
 
-            {/* CONTOH KOTAK BERITA 2 */}
             <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" />
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
               <div className="news-content">
                 <div className="news-date">28 Juni 2026</div>
                 <h3 className="news-title">Penambahan Koleksi E-Book Baru</h3>
@@ -155,19 +153,20 @@ export default function PerpusPage() {
 
           </div>
         </section>
-        {/* STRUKTUR */}
+
+        {/* STRUKTUR - SUDAH DIKUNCI UKURAN FOTONYA */}
         <section id="struktur" className="section-card glass">
           <h2 className="section-title">Struktur Organisasi</h2>
           <p>Susunan kepengurusan Perpustakaan Semangat Pagi SMPN 1 Damai:</p>
           <div className="tree-container">
             <div className="tree-node">
-              <img src="/gambar/Sri Wahyuningsih.jpeg" alt="Kepala Sekolah" className="tree-img" />
+              <img src="/gambar/Sri Wahyuningsih.jpeg" alt="Kepala Sekolah" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
               <div className="tree-name">Sri Wahyuningsih, S.Pd</div>
               <div className="tree-title">Kepala Sekolah</div>
             </div>
             <div className="tree-line-v"></div>
             <div className="tree-node">
-              <img src="/gambar/Mina Sari.jpeg" alt="Kepala Perpustakaan" className="tree-img" />
+              <img src="/gambar/Mina Sari.jpeg" alt="Kepala Perpustakaan" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
               <div className="tree-name">Mina Sari</div>
               <div className="tree-title">Kepala Perpustakaan</div>
             </div>
@@ -177,7 +176,7 @@ export default function PerpusPage() {
               <div className="tree-branch">
                 <div className="tree-line-v"></div>
                 <div className="tree-node">
-                  <img src="/gambar/Meltiana.jpeg" alt="Layanan Pembaca" className="tree-img" />
+                  <img src="/gambar/Meltiana.jpeg" alt="Layanan Pembaca" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
                   <div className="tree-name">Meltiana</div>
                   <div className="tree-title">Layanan Pembaca</div>
                 </div>
@@ -185,7 +184,7 @@ export default function PerpusPage() {
               <div className="tree-branch">
                 <div className="tree-line-v"></div>
                 <div className="tree-node">
-                  <img src="/gambar/Nur Alfi Syahri.jpg" alt="Layanan Teknis TIK" className="tree-img" />
+                  <img src="/gambar/Nur Alfi Syahri.jpg" alt="Layanan Teknis TIK" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
                   <div className="tree-name">Nur Alfi Syahri, S.P.</div>
                   <div className="tree-title">Layanan Teknis TIK</div>
                 </div>
@@ -227,7 +226,6 @@ export default function PerpusPage() {
             <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Kegiatan 4" /></div>
             <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.55 AM.jpeg" alt="Kegiatan 6" /></div>
             <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.42.19 AM.jpeg" alt="Kegiatan 10" /></div>
-            {/* Tambahkan foto lainnya sesuai selera */}
           </div>
         </section>
 
