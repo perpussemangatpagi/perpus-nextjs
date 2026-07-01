@@ -25,6 +25,13 @@ export default function ClientPage() {
     }
   };
 
+  // Fungsi Dummy untuk Enter di Search Bar (Bisa lu ubah nanti ke API lu)
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      alert(`Mencari E-Book: ${e.target.value}\n(Nanti fitur ini disambung ke Google Drive lu bre!)`);
+    }
+  };
+
   const ruangBaseStyle = {
     padding: '10px',
     borderRadius: '16px',
@@ -41,26 +48,54 @@ export default function ClientPage() {
   };
 
   return (
-    // overflowX: 'hidden' DIHAPUS BIAR NAVBAR NGGAK MALES TURUN
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* HEADER NAVBAR - DITAMBAHIN STICKY & FLEX WRAP BIAR SEARCH BAR PAS */}
-      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, flexWrap: 'wrap' }}>
+      {/* HEADER NAVBAR - DIROMBAK JADI 2 BARIS COMPACT */}
+      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px 15px' }}>
         
-        <div className="nav-brand">
-          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
-          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
-          <div className="title">Perpus SMPN 1 Damai</div>
+        {/* BARIS ATAS: Logo Perpus & Kolom Search */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
+          
+          <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px' }}>
+            <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
+            <div className="title" style={{ fontSize: '0.95rem' }}>Perpus SMPN 1 Damai</div>
+          </div>
+
+          <div style={{ position: 'relative', flex: 1, maxWidth: '220px' }}>
+            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
+            <input 
+              type="text" 
+              placeholder="Cari E-Book..." 
+              onKeyDown={handleSearch}
+              style={{ 
+                width: '100%', 
+                padding: '8px 15px 8px 32px', 
+                borderRadius: '20px', 
+                border: '1px solid rgba(255, 255, 255, 0.8)', 
+                background: 'rgba(255, 255, 255, 0.6)', 
+                outline: 'none', 
+                color: '#0f172a', 
+                fontWeight: '600', 
+                fontSize: '0.8rem',
+                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                transition: 'all 0.3s ease'
+              }} 
+              onFocus={(e) => { e.target.style.background = 'rgba(255,255,255,0.95)'; e.target.style.borderColor = '#0ea5e9'; }}
+              onBlur={(e) => { e.target.style.background = 'rgba(255,255,255,0.6)'; e.target.style.borderColor = 'rgba(255, 255, 255, 0.8)'; }}
+            />
+          </div>
+
         </div>
 
-        <div className="nav-wrapper">
+        {/* BARIS BAWAH: Navigasi Menu Scroll */}
+        <div className="nav-wrapper" style={{ width: '100%', maxWidth: '100%', justifyContent: 'flex-start', padding: 0 }}>
           {showLeftArrow && (
-            <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex' }}>
-              <i className="fa-solid fa-chevron-left"></i>
+            <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px' }}>
+              <i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i>
             </button>
           )}
           <nav>
-            <ul ref={navRef} onScroll={cekPanah}>
+            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '0 30px', gap: '1rem' }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#profil">Profil</a></li>
               <li><a href="#info">Tata Tertib</a></li>
@@ -72,38 +107,11 @@ export default function ClientPage() {
             </ul>
           </nav>
           {showRightArrow && (
-            <button className="nav-arrow right" onClick={() => scrollNav(100)} style={{ display: 'flex' }}>
-              <i className="fa-solid fa-chevron-right"></i>
+            <button className="nav-arrow right" onClick={() => scrollNav(100)} style={{ display: 'flex', width: '28px', height: '28px' }}>
+              <i className="fa-solid fa-chevron-right" style={{ fontSize: '0.8rem' }}></i>
             </button>
           )}
         </div>
-
-        {/* ========================================= */}
-        {/* KOLOM SEARCH BARU DI BAGIAN BAWAH NAVBAR  */}
-        {/* ========================================= */}
-        <div style={{ width: '100%', marginTop: '15px', position: 'relative' }}>
-          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '1rem' }}></i>
-          <input 
-            type="text" 
-            placeholder="Cari buku / berita / info..." 
-            style={{ 
-              width: '100%', 
-              padding: '12px 20px 12px 45px', 
-              borderRadius: '25px', 
-              border: '2px solid rgba(255, 255, 255, 0.6)', 
-              background: 'rgba(255, 255, 255, 0.6)', 
-              outline: 'none', 
-              color: '#0f172a', 
-              fontWeight: '600', 
-              fontSize: '0.95rem',
-              boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.03), 0 4px 15px rgba(0,0,0,0.05)',
-              transition: 'all 0.3s ease'
-            }} 
-            onFocus={(e) => { e.target.style.background = 'rgba(255,255,255,0.9)'; e.target.style.borderColor = '#0ea5e9'; }}
-            onBlur={(e) => { e.target.style.background = 'rgba(255,255,255,0.6)'; e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)'; }}
-          />
-        </div>
-
       </header>
 
       {/* HERO */}
