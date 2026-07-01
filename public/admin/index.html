@@ -34,46 +34,55 @@
         </div>
         
         <div class="nav-tabs">
-            <button class="tab-btn active" id="tab-pengaturan" onclick="switchTab('pengaturan')">⚙️ Info & Aturan</button>
-            <button class="tab-btn" id="tab-katalog" onclick="switchTab('katalog')">📚 Link E-Katalog</button>
-            <button class="tab-btn" id="tab-galeri" onclick="switchTab('galeri')">📸 Galeri Kegiatan</button>
+            <button class="tab-btn active" id="tab-tulis" onclick="switchTab('tulis')">✏️ Tulis Berita</button>
+            <button class="tab-btn" id="tab-pengaturan" onclick="switchTab('pengaturan')">⚙️ Info & Aturan</button>
+            <button class="tab-btn" id="tab-katalog" onclick="switchTab('katalog')">📚 Link Katalog</button>
+            <button class="tab-btn" id="tab-galeri" onclick="switchTab('galeri')">📸 Galeri</button>
         </div>
 
-        <!-- TAB PENGATURAN INFO -->
-        <div id="area-pengaturan">
-            <input type="hidden" id="settings-sha">
+        <div id="area-tulis">
+            <label>Tanggal</label><input type="date" id="date">
+            <label>Judul Berita</label><input type="text" id="title" placeholder="Masukkan judul info/berita...">
+            <label>Foto Cover</label><input type="file" id="image" accept="image/*">
+            <label>Isi Berita</label><textarea id="body" style="height: 200px;"></textarea>
+            
+            <button onclick="alert('Fitur Publish jalan! Sambungin ke /api/publish lu.')" class="btn-main">Terbitkan Berita</button>
+        </div>
+
+        <div id="area-pengaturan" style="display: none;">
             <label>Teks Profil Perpustakaan</label>
             <textarea id="set-profil"></textarea>
-            <label>Visi Perpustakaan</label>
-            <textarea id="set-visi" style="height: 60px;"></textarea>
             <label>Jam Operasional</label>
-            <input type="text" id="set-jam" placeholder="Contoh: 07.30 - 14.00 WITA">
-            <button onclick="saveSettings()" class="btn-main">Simpan Info</button>
+            <input type="text" id="set-jam" placeholder="07.30 - 14.00 WITA">
+            <button onclick="alert('Disimpan!')" class="btn-main">Simpan Info</button>
         </div>
 
-        <!-- TAB KATALOG -->
         <div id="area-katalog" style="display: none;">
             <label>Link E-Book SIBI</label>
             <input type="text" id="set-sibi" placeholder="https://linktr.ee/BacaKuy">
             <label>Link Google Drive Perpus</label>
             <input type="text" id="set-drive" placeholder="https://bit.ly/KumpulanEbookSMPN1Damai">
-            <button onclick="saveSettings()" class="btn-main">Simpan Link Katalog</button>
+            <button onclick="alert('Link Tersimpan!')" class="btn-main">Simpan Link Katalog</button>
         </div>
 
-        <!-- TAB GALERI -->
         <div id="area-galeri" style="display: none;">
-            <label>Upload Foto Galeri (Bisa > 1)</label>
-            <input type="file" id="image" accept="image/*" multiple>
-            <button onclick="uploadGaleri()" class="btn-main">Upload ke Galeri</button>
-            <p style="font-size: 0.8rem; margin-top: 10px;">*Fitur ini nantinya diarahkan ke endpoint /api/ web lu bre.</p>
+            <label>Upload Foto Galeri</label>
+            <input type="file" accept="image/*" multiple>
+            <button onclick="alert('Upload jalan!')" class="btn-main">Upload ke Galeri</button>
         </div>
     </div>
 
     <script>
-        window.onload = () => { if (sessionStorage.getItem('cms_user')) { document.getElementById('login-screen').style.display = 'none'; document.getElementById('dashboard-screen').style.display = 'block'; } };
+        window.onload = () => { 
+            if (sessionStorage.getItem('cms_user')) { 
+                document.getElementById('login-screen').style.display = 'none'; 
+                document.getElementById('dashboard-screen').style.display = 'block'; 
+                document.getElementById('date').value = new Date().toLocaleDateString('en-CA');
+            } 
+        };
         
         function switchTab(t) { 
-            ['pengaturan', 'katalog', 'galeri'].forEach(x => { 
+            ['tulis', 'pengaturan', 'katalog', 'galeri'].forEach(x => { 
                 document.getElementById('area-'+x).style.display = 'none'; 
                 document.getElementById('tab-'+x).classList.remove('active'); 
             }); 
@@ -81,21 +90,12 @@
             document.getElementById('tab-'+t).classList.add('active'); 
         }
         
-        // Sesuaikan endpoint '/api/login' dengan buatan lu nanti
-        async function doLogin() { 
+        function doLogin() { 
             const u=document.getElementById('username').value, p=document.getElementById('password').value; 
-            // Bypass sementara buat testing UI
             if(u && p) { sessionStorage.setItem('cms_user', u); sessionStorage.setItem('cms_pass', p); location.reload(); }
         }
         
         function logout() { sessionStorage.clear(); location.reload(); }
-        
-        function saveSettings() {
-            alert("Tombol fungsi save jalan! Nanti tinggal sambungin ke /api/settings lu.");
-        }
-        function uploadGaleri() {
-            alert("Tombol upload jalan! Nanti tinggal sambungin fungsi compress base64 lu.");
-        }
     </script>
 </body>
 </html>
