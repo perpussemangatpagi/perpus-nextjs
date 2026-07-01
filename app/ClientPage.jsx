@@ -26,7 +26,7 @@ export default function ClientPage() {
   };
 
   return (
-    <>
+    <div style={{ overflowX: 'hidden', width: '100vw', maxWidth: '100%' }}>
       {/* HEADER */}
       <header className="header-container glass">
         <div className="nav-brand">
@@ -62,17 +62,18 @@ export default function ClientPage() {
 
       {/* HERO */}
       <header className="hero">
-        <div className="hero-logos">
-          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
-          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpustakaan" style={{ width: '100px', height: '100px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
+        <div className="hero-logos" style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
+          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpustakaan" style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
         </div>
         <div className="npp-badge">NPP: 6407081D0000001</div>
-        <h1>Semangat Pagi</h1>
-        <h2>(Prestasi Anak Negeri)</h2>
+        <h1 style={{ fontSize: '2.5rem', margin: '10px 0' }}>Semangat Pagi</h1>
+        <h2 style={{ fontSize: '1.2rem', marginBottom: '15px' }}>(Prestasi Anak Negeri)</h2>
         <p>Ekosistem pintar perpustakaan SMPN 1 Damai untuk mendukung generasi pembelajar yang unggul dan berliterasi tinggi.</p>
       </header>
 
-      <div className="container">
+      <div className="container" style={{ overflowX: 'hidden' }}>
+        
         {/* PROFIL & VISI MISI */}
         <section id="profil" className="section-card glass">
           <h2 className="section-title">Profil & Visi Misi</h2>
@@ -130,75 +131,82 @@ export default function ClientPage() {
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
           <div className="news-grid">
-            
             <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
               <div className="news-content">
                 <div className="news-date">02 Juli 2026</div>
-                <h3 className="news-title">Kunjungan Asesor Akreditasi ke Perpustakaan</h3>
+                <h3 className="news-title" style={{ fontSize: '1.1rem' }}>Kunjungan Asesor Akreditasi ke Perpustakaan</h3>
                 <p className="news-snippet">Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...</p>
                 <a href="/berita/kunjungan-asesor" className="btn-baca">Baca Selengkapnya</a>
               </div>
             </div>
 
             <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" style={{ width: '100%', height: '250px', objectFit: 'cover' }} />
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
               <div className="news-content">
                 <div className="news-date">28 Juni 2026</div>
-                <h3 className="news-title">Penambahan Koleksi E-Book Baru</h3>
+                <h3 className="news-title" style={{ fontSize: '1.1rem' }}>Penambahan Koleksi E-Book Baru</h3>
                 <p className="news-snippet">Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog Google Drive perpustakaan...</p>
                 <a href="/berita/koleksi-ebook-baru" className="btn-baca">Baca Selengkapnya</a>
               </div>
             </div>
-
           </div>
         </section>
 
-        {/* STRUKTUR - SUDAH DIKUNCI UKURAN FOTONYA */}
-        <section id="struktur" className="section-card glass">
+        {/* STRUKTUR ORGANISASI - DIKUNCI BIAR GAK KELUAR JALUR */}
+        <section id="struktur" className="section-card glass" style={{ overflowX: 'hidden' }}>
           <h2 className="section-title">Struktur Organisasi</h2>
-          <p>Susunan kepengurusan Perpustakaan Semangat Pagi SMPN 1 Damai:</p>
-          <div className="tree-container">
-            <div className="tree-node">
-              <img src="/gambar/Sri Wahyuningsih.jpeg" alt="Kepala Sekolah" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
-              <div className="tree-name">Sri Wahyuningsih, S.Pd</div>
-              <div className="tree-title">Kepala Sekolah</div>
+          <p style={{ marginBottom: '20px' }}>Susunan kepengurusan Perpustakaan Semangat Pagi SMPN 1 Damai:</p>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
+            
+            {/* Kepsek */}
+            <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', width: '100%', maxWidth: '250px' }}>
+              <img src="/gambar/Sri Wahyuningsih.jpeg" alt="Kepala Sekolah" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
+              <div style={{ fontWeight: '800', marginTop: '10px', color: '#0f172a' }}>Sri Wahyuningsih, S.Pd</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 10px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Kepala Sekolah</div>
             </div>
-            <div className="tree-line-v"></div>
-            <div className="tree-node">
-              <img src="/gambar/Mina Sari.jpeg" alt="Kepala Perpustakaan" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
-              <div className="tree-name">Mina Sari</div>
-              <div className="tree-title">Kepala Perpustakaan</div>
+            
+            {/* Garis */}
+            <div style={{ width: '3px', height: '20px', background: 'white' }}></div>
+
+            {/* Kepala Perpus */}
+            <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', width: '100%', maxWidth: '250px' }}>
+              <img src="/gambar/Mina Sari.jpeg" alt="Kepala Perpustakaan" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
+              <div style={{ fontWeight: '800', marginTop: '10px', color: '#0f172a' }}>Mina Sari</div>
+              <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 10px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Kepala Perpustakaan</div>
             </div>
-            <div className="tree-line-v"></div>
-            <div className="tree-line-h"></div>
-            <div className="tree-branch-container">
-              <div className="tree-branch">
-                <div className="tree-line-v"></div>
-                <div className="tree-node">
-                  <img src="/gambar/Meltiana.jpeg" alt="Layanan Pembaca" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
-                  <div className="tree-name">Meltiana</div>
-                  <div className="tree-title">Layanan Pembaca</div>
-                </div>
+
+            {/* Garis */}
+            <div style={{ width: '3px', height: '20px', background: 'white' }}></div>
+
+            {/* Dua Layanan (Dibikin turun ke bawah aja buat HP biar ga tenis) */}
+            <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: '15px', width: '100%' }}>
+              
+              <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', flex: '1', minWidth: '130px', maxWidth: '250px' }}>
+                <img src="/gambar/Meltiana.jpeg" alt="Layanan Pembaca" style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
+                <div style={{ fontWeight: '800', marginTop: '10px', fontSize: '0.9rem', color: '#0f172a' }}>Meltiana</div>
+                <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 8px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Layanan Pembaca</div>
               </div>
-              <div className="tree-branch">
-                <div className="tree-line-v"></div>
-                <div className="tree-node">
-                  <img src="/gambar/Nur Alfi Syahri.jpg" alt="Layanan Teknis TIK" className="tree-img" style={{ width: '90px', height: '90px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block' }} />
-                  <div className="tree-name">Nur Alfi Syahri, S.P.</div>
-                  <div className="tree-title">Layanan Teknis TIK</div>
-                </div>
+
+              <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', flex: '1', minWidth: '130px', maxWidth: '250px' }}>
+                <img src="/gambar/Nur Alfi Syahri.jpg" alt="Layanan Teknis TIK" style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
+                <div style={{ fontWeight: '800', marginTop: '10px', fontSize: '0.9rem', color: '#0f172a' }}>Nur Alfi Syahri, S.P.</div>
+                <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 8px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Layanan Teknis</div>
               </div>
+
             </div>
+
           </div>
         </section>
 
-        {/* DENAH */}
+        {/* DENAH - DIKUNCI SCROLL KHUSUS KOTAK INI AJA */}
         <section id="denah" className="section-card glass">
           <h2 className="section-title">Denah Ruangan</h2>
           <p style={{ marginBottom: '2rem' }}>Tata letak fasilitas dan area koleksi perpustakaan Semangat Pagi:</p>
-          <div className="denah-wrapper">
-            <div className="denah-map">
+          
+          <div style={{ overflowX: 'auto', width: '100%', paddingBottom: '15px', WebkitOverflowScrolling: 'touch', background: 'rgba(255,255,255,0.2)', borderRadius: '20px' }}>
+            <div className="denah-map" style={{ minWidth: '700px', padding: '15px' }}>
               <div className="ruang-glass area-pintu"><div className="icon">🚪</div>Pintu Masuk & Loker</div>
               <div className="ruang-glass area-petugas"><div className="icon">👨‍💼</div>Meja Petugas</div>
               <div className="ruang-glass area-pohon"><div className="icon">🌳</div>Pohon Literasi</div>
@@ -215,39 +223,44 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* GALERI */}
+        {/* GALERI - DIKUNCI PAKE GRID 2 KOLOM RAPI */}
         <section id="galeri" className="section-card glass">
           <h2 className="section-title">Galeri Kegiatan</h2>
-          <p>Dokumentasi aktivitas, penataan perpustakaan, digitalisasi katalog, serta kreativitas siswa/siswi SMPN 1 Damai.</p>
-          <div className="galeri-grid">
-            <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Kegiatan 1" /></div>
-            <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.44 AM.jpeg" alt="Kegiatan 2" /></div>
-            <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.45 AM.jpeg" alt="Kegiatan 3" /></div>
-            <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Kegiatan 4" /></div>
-            <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.55 AM.jpeg" alt="Kegiatan 6" /></div>
-            <div className="galeri-item"><img src="/gambar/WhatsApp Image 2026-05-30 at 10.42.19 AM.jpeg" alt="Kegiatan 10" /></div>
+          <p style={{ marginBottom: '15px' }}>Dokumentasi aktivitas, penataan perpustakaan, digitalisasi katalog, serta kreativitas siswa/siswi SMPN 1 Damai.</p>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
+            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Kegiatan 1" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
+            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.44 AM.jpeg" alt="Kegiatan 2" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
+            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.45 AM.jpeg" alt="Kegiatan 3" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
+            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Kegiatan 4" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
+            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.55 AM.jpeg" alt="Kegiatan 6" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
+            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.42.19 AM.jpeg" alt="Kegiatan 10" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
           </div>
         </section>
 
-        {/* KATALOG */}
+        {/* KATALOG - DIKUNCI FLEX COLUMN BIAR TOMBOLNYA GAK TELANJANG */}
         <section id="katalog" className="dashboard-section glass">
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#0f172a', letterSpacing: '-1px' }}>E-Katalog Digital</h2>
-          <p style={{ maxWidth: '600px', margin: '0 auto', color: '#1e293b', fontSize: '1.1rem', fontWeight: 500 }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
+          <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#0f172a', letterSpacing: '-1px' }}>E-Katalog Digital</h2>
+          <p style={{ maxWidth: '600px', margin: '0 auto', color: '#1e293b', fontSize: '1rem', fontWeight: 500 }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
           
-          <div className="btn-container">
-            <a href="https://linktr.ee/BacaKuy" target="_blank" rel="noopener noreferrer" className="btn-action btn-sibi">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', marginTop: '25px', width: '100%' }}>
+            
+            <a href="https://linktr.ee/BacaKuy" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '300px', padding: '16px', background: '#0ea5e9', color: 'white', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', border: '2px solid #38bdf8', boxShadow: '0 5px 15px rgba(14, 165, 233, 0.3)' }}>
               📚 E-Book SIBI (Nasional)
             </a>
-            <a href="https://bit.ly/KumpulanEbookSMPN1Damai" target="_blank" rel="noopener noreferrer" className="btn-action btn-drive">
-              📁 E-Book SMP Negeri 1 Damai
+            
+            <a href="https://bit.ly/KumpulanEbookSMPN1Damai" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '300px', padding: '16px', background: '#10b981', color: 'white', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', border: '2px solid #34d399', boxShadow: '0 5px 15px rgba(16, 185, 129, 0.3)' }}>
+              📁 E-Book SMPN 1 Damai
             </a>
+
           </div>
         </section>
+
       </div>
 
       <footer className="glass" style={{ textAlign: 'center', padding: '1.5rem', margin: '2rem auto', width: '90%', maxWidth: '600px', borderRadius: '30px', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
         &copy; 2026 | Admin Web: Nur Alfi Syahri, S.P.
       </footer>
-    </>
+    </div>
   );
 }
