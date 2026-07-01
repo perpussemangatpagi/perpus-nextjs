@@ -25,6 +25,22 @@ export default function ClientPage() {
     }
   };
 
+  // Gaya Template untuk kotak-kotak Denah biar rapi dan seragam
+  const ruangBaseStyle = {
+    padding: '10px',
+    borderRadius: '16px',
+    border: '1px solid rgba(255,255,255,0.5)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontWeight: '700',
+    fontSize: '0.8rem',
+    color: '#0f172a',
+    backdropFilter: 'blur(8px)'
+  };
+
   return (
     <div style={{ overflowX: 'hidden', width: '100vw', maxWidth: '100%' }}>
       {/* HEADER */}
@@ -153,34 +169,29 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* STRUKTUR ORGANISASI - DIKUNCI BIAR GAK KELUAR JALUR */}
+        {/* STRUKTUR ORGANISASI */}
         <section id="struktur" className="section-card glass" style={{ overflowX: 'hidden' }}>
           <h2 className="section-title">Struktur Organisasi</h2>
           <p style={{ marginBottom: '20px' }}>Susunan kepengurusan Perpustakaan Semangat Pagi SMPN 1 Damai:</p>
           
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
             
-            {/* Kepsek */}
             <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', width: '100%', maxWidth: '250px' }}>
               <img src="/gambar/Sri Wahyuningsih.jpeg" alt="Kepala Sekolah" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
               <div style={{ fontWeight: '800', marginTop: '10px', color: '#0f172a' }}>Sri Wahyuningsih, S.Pd</div>
               <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 10px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Kepala Sekolah</div>
             </div>
             
-            {/* Garis */}
             <div style={{ width: '3px', height: '20px', background: 'white' }}></div>
 
-            {/* Kepala Perpus */}
             <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', width: '100%', maxWidth: '250px' }}>
               <img src="/gambar/Mina Sari.jpeg" alt="Kepala Perpustakaan" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
               <div style={{ fontWeight: '800', marginTop: '10px', color: '#0f172a' }}>Mina Sari</div>
               <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 10px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Kepala Perpustakaan</div>
             </div>
 
-            {/* Garis */}
             <div style={{ width: '3px', height: '20px', background: 'white' }}></div>
 
-            {/* Dua Layanan (Dibikin turun ke bawah aja buat HP biar ga tenis) */}
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: '15px', width: '100%' }}>
               
               <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', flex: '1', minWidth: '130px', maxWidth: '250px' }}>
@@ -196,34 +207,76 @@ export default function ClientPage() {
               </div>
 
             </div>
-
           </div>
         </section>
 
-        {/* DENAH - DIKUNCI SCROLL KHUSUS KOTAK INI AJA */}
+        {/* DENAH RUANGAN - DIKUNCI FULL INLINE STYLE BIAR JADI PETA 100% */}
         <section id="denah" className="section-card glass">
           <h2 className="section-title">Denah Ruangan</h2>
           <p style={{ marginBottom: '2rem' }}>Tata letak fasilitas dan area koleksi perpustakaan Semangat Pagi:</p>
           
-          <div style={{ overflowX: 'auto', width: '100%', paddingBottom: '15px', WebkitOverflowScrolling: 'touch', background: 'rgba(255,255,255,0.2)', borderRadius: '20px' }}>
-            <div className="denah-map" style={{ minWidth: '700px', padding: '15px' }}>
-              <div className="ruang-glass area-pintu"><div className="icon">🚪</div>Pintu Masuk & Loker</div>
-              <div className="ruang-glass area-petugas"><div className="icon">👨‍💼</div>Meja Petugas</div>
-              <div className="ruang-glass area-pohon"><div className="icon">🌳</div>Pohon Literasi</div>
-              <div className="ruang-glass area-koran"><div className="icon">📰</div>Rak Koran/Majalah</div>
-              <div className="ruang-glass area-komputer"><div className="icon">💻</div>Ruang & Meja Komputer</div>
-              <div className="ruang-glass area-lesehan"><div className="icon">🛋️</div>Ruang Baca Lesehan</div>
-              <div className="ruang-glass area-rak1"><div className="icon">📚</div>Rak Buku (Kiri)</div>
-              <div className="ruang-glass area-rak2"><div className="icon">📚</div>Rak Buku (Kanan)</div>
-              <div className="ruang-glass area-introvert"><div className="icon">🤫</div>Ruang Baca Introvert</div>
-              <div className="ruang-glass area-rak-v"><div className="icon">📖</div>Rak Vertikal Tengah</div>
-              <div className="ruang-glass area-kelompok"><div className="icon">👥</div>Ruang Belajar Kelompok</div>
-              <div className="ruang-glass area-rak-b"><div className="icon">📚</div>Koleksi Utama (Belakang)</div>
+          <div style={{ overflowX: 'auto', width: '100%', paddingBottom: '15px', WebkitOverflowScrolling: 'touch', background: 'rgba(255,255,255,0.15)', borderRadius: '24px', padding: '15px' }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateAreas: `
+                "pintu petugas pohon koran"
+                "komputer lesehan lesehan lesehan"
+                "rak1 rak1 rak2 rak2"
+                "introvert rak_v rak_v kelompok"
+                "rak_b rak_b rak_b rak_b"
+              `,
+              gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr',
+              gridAutoRows: 'minmax(85px, auto)',
+              gap: '12px',
+              minWidth: '700px'
+            }}>
+              
+              <div style={{ ...ruangBaseStyle, gridArea: 'pintu', background: 'rgba(255,255,255,0.8)', border: '2px solid white' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>🚪</div>Pintu Masuk & Loker
+              </div>
+              <div style={{ ...ruangBaseStyle, gridArea: 'petugas', background: 'rgba(14, 165, 233, 0.3)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>👨‍💼</div>Meja Petugas
+              </div>
+              <div style={{ ...ruangBaseStyle, gridArea: 'pohon', background: 'rgba(251, 146, 60, 0.3)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>🌳</div>Pohon Literasi
+              </div>
+              <div style={{ ...ruangBaseStyle, gridArea: 'koran', background: 'rgba(244, 114, 182, 0.3)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>📰</div>Rak Koran/Majalah
+              </div>
+              
+              <div style={{ ...ruangBaseStyle, gridArea: 'komputer', background: 'rgba(52, 211, 153, 0.25)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>💻</div>Ruang & Meja Komputer
+              </div>
+              <div style={{ ...ruangBaseStyle, gridArea: 'lesehan', background: 'rgba(167, 139, 250, 0.25)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>🛋️</div>Ruang Baca Lesehan
+              </div>
+
+              <div style={{ ...ruangBaseStyle, gridArea: 'rak1', background: 'rgba(99, 102, 241, 0.3)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>📚</div>Rak Buku (Kiri)
+              </div>
+              <div style={{ ...ruangBaseStyle, gridArea: 'rak2', background: 'rgba(99, 102, 241, 0.3)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>📚</div>Rak Buku (Kanan)
+              </div>
+
+              <div style={{ ...ruangBaseStyle, gridArea: 'introvert', background: 'rgba(241, 245, 249, 0.5)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>🤫</div>Ruang Baca Introvert
+              </div>
+              <div style={{ ...ruangBaseStyle, gridArea: 'rak_v', background: 'rgba(99, 102, 241, 0.3)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>📖</div>Rak Vertikal Tengah
+              </div>
+              <div style={{ ...ruangBaseStyle, gridArea: 'kelompok', background: 'rgba(253, 224, 71, 0.3)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>👥</div>Ruang Belajar Kelompok
+              </div>
+
+              <div style={{ ...ruangBaseStyle, gridArea: 'rak_b', background: 'rgba(99, 102, 241, 0.35)' }}>
+                <div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>📚</div>Koleksi Utama (Belakang)
+              </div>
+
             </div>
           </div>
         </section>
 
-        {/* GALERI - DIKUNCI PAKE GRID 2 KOLOM RAPI */}
+        {/* GALERI */}
         <section id="galeri" className="section-card glass">
           <h2 className="section-title">Galeri Kegiatan</h2>
           <p style={{ marginBottom: '15px' }}>Dokumentasi aktivitas, penataan perpustakaan, digitalisasi katalog, serta kreativitas siswa/siswi SMPN 1 Damai.</p>
@@ -238,9 +291,9 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* KATALOG - DIKUNCI FLEX COLUMN BIAR TOMBOLNYA GAK TELANJANG */}
-        <section id="katalog" className="dashboard-section glass">
-          <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#0f172a', letterSpacing: '-1px' }}>E-Katalog Digital</h2>
+        {/* KATALOG - UDAH DISAMAIN CLASS-NYA BIAR GAK TAJAM KOTAKNYA */}
+        <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
+          <h2 className="section-title">E-Katalog Digital</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto', color: '#1e293b', fontSize: '1rem', fontWeight: 500 }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', marginTop: '25px', width: '100%' }}>
