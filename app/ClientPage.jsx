@@ -6,24 +6,19 @@ export default function ClientPage() {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // STATE SEARCH NAVBAR
   const [searchWebQuery, setSearchWebQuery] = useState('');
   const [showWebResults, setShowWebResults] = useState(false);
 
-  // STATE SEARCH E-KATALOG
   const [searchKatalogQuery, setSearchKatalogQuery] = useState('');
   const [showKatalogResults, setShowKatalogResults] = useState(false);
 
-  // DATABASE BUKU
   const [dbBuku, setDbBuku] = useState([]);
   const [randomBuku, setRandomBuku] = useState([]); 
   const [isFetching, setIsFetching] = useState(true);
 
-  // === STATE DATABASE BERITA DARI CMS ===
   const [beritaData, setBeritaData] = useState([]);
   const [isBeritaLoading, setIsBeritaLoading] = useState(true);
 
-  // DATABASE KONTEN WEB UNTUK SEARCH
   const databaseWeb = [
     { judul: 'E-Katalog Perpustakaan', deskripsi: 'Akses ratusan modul pembelajaran, buku literatur, novel, dan kumpulan ebook internal sekolah.', link: '#katalog', icon: '📚' },
     { judul: 'Profil & Visi Misi', deskripsi: 'Semangat Pagi (Prestasi Anak Negeri). Menjadikan perpustakaan sebagai jantung pendidikan yang mencetak generasi literat, unggul, dan berwawasan global.', link: '#profil', icon: '🎯' },
@@ -50,9 +45,7 @@ export default function ClientPage() {
         setDbBuku(data);
         const acakData = [...data].sort(() => 0.5 - Math.random());
         setRandomBuku(acakData.slice(0, 10)); 
-      } catch (error) {
-        console.error("Gagal memuat database perpustakaan dari Drive.");
-      }
+      } catch (error) { console.error("Gagal memuat database perpustakaan."); }
       setIsFetching(false);
     };
 
@@ -61,24 +54,19 @@ export default function ClientPage() {
         const res = await fetch('/api/berita');
         const data = await res.json();
         setBeritaData(data);
-      } catch (error) {
-        console.error("Gagal load berita dari CMS.");
-      }
+      } catch (error) { console.error("Gagal load berita CMS."); }
       setIsBeritaLoading(false);
     };
 
     fetchDataDrive();
     fetchBerita();
-    
     cekPanah();
     window.addEventListener('resize', cekPanah);
     return () => window.removeEventListener('resize', cekPanah);
   }, []);
 
   const scrollNav = (jarak) => {
-    if (navRef.current) {
-      navRef.current.scrollBy({ left: jarak, behavior: 'smooth' });
-    }
+    if (navRef.current) navRef.current.scrollBy({ left: jarak, behavior: 'smooth' });
   };
 
   const hasilCariWeb = databaseWeb.filter(item => 
@@ -95,48 +83,60 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* NAVBAR VERSI DESKTOP: SINGLE LINE & PILL SHAPE */}
-      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexWrap: 'wrap', alignItems: 'center', padding: '10px 15px', borderRadius: '50px', gap: '15px' }}>
+      {/* NAVBAR VERSI DESKTOP & MOBILE (PRESISI 1 BARIS DI DESKTOP) */}
+      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', padding: '8px 20px', borderRadius: '50px', gap: '15px' }}>
         
-        {/* KIRI: Logo + Search */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flex: '1 1 auto', minWidth: '320px' }}>
-          <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px', flexShrink: 0 }}>
-            <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
-            <div className="title" style={{ fontSize: '0.95rem', whiteSpace: 'nowrap' }}>Perpus SMPN 1 Damai</div>
-          </div>
-          
-          <div style={{ position: 'relative', flex: '1 1 auto', maxWidth: '280px' }}>
-            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
-            <input type="text" placeholder="Cari info web..." value={searchWebQuery} onChange={(e) => setSearchWebQuery(e.target.value)} onFocus={() => setShowWebResults(true)} onBlur={() => setTimeout(() => setShowWebResults(false), 200)} style={{ width: '100%', padding: '8px 15px 8px 32px', borderRadius: '50px', border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease' }} />
-            {showWebResults && (
-              <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '120%', left: 0, width: '280px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
-                {searchWebQuery === '' ? (
-                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik nama, berita, atau info...</div>
-                ) : hasilCariWeb.length > 0 ? (
-                  hasilCariWeb.map((item, index) => (
-                    <a key={index} href={item.link} onClick={() => setShowWebResults(false)} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '12px 10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
-                      <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: '800' }}>{item.judul}</span>
-                        <span style={{ fontSize: '0.7rem', color: '#64748b', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px' }}>{item.deskripsi}</span>
-                      </div>
-                    </a>
-                  ))
-                ) : (
-                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Info tidak ditemukan bre 😢</div>
-                )}
-              </div>
-            )}
-          </div>
+        {/* KIRI: Logo */}
+        <div className="nav-brand" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 auto', minWidth: 'max-content' }}>
+          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
+          <div className="title" style={{ fontSize: '0.95rem', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Perpus SMPN 1 Damai</div>
         </div>
 
-        {/* KANAN: Menu Navigasi (Otomatis geser kanan di Desktop) */}
-        <div className="nav-wrapper" style={{ flex: '2 1 auto', maxWidth: '100%', padding: 0, display: 'flex', justifyContent: 'flex-end', background: 'transparent', border: 'none' }}>
+        {/* TENGAH: Search */}
+        <div style={{ position: 'relative', flex: '1 1 auto', maxWidth: '300px', minWidth: '150px' }}>
+          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
+          <input 
+            type="text" 
+            placeholder="Cari info web..." 
+            value={searchWebQuery}
+            onChange={(e) => setSearchWebQuery(e.target.value)}
+            onFocus={() => setShowWebResults(true)}
+            onBlur={() => setTimeout(() => setShowWebResults(false), 200)} 
+            style={{ 
+              width: '100%', padding: '8px 15px 8px 35px', borderRadius: '50px', 
+              border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', 
+              outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem',
+              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease'
+            }} 
+          />
+          {showWebResults && (
+            <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '120%', left: 0, width: '100%', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
+              {searchWebQuery === '' ? (
+                <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik nama, berita...</div>
+              ) : hasilCariWeb.length > 0 ? (
+                hasilCariWeb.map((item, index) => (
+                  <a key={index} href={item.link} onClick={() => setShowWebResults(false)} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '12px 10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
+                    <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: '800' }}>{item.judul}</span>
+                      <span style={{ fontSize: '0.7rem', color: '#64748b', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px' }}>{item.deskripsi}</span>
+                    </div>
+                  </a>
+                ))
+              ) : (
+                <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Info tidak ditemukan bre 😢</div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* KANAN: Menu Navigasi */}
+        <div className="nav-wrapper" style={{ flex: '2 1 auto', display: 'flex', justifyContent: 'flex-end', background: 'transparent', border: 'none', padding: 0, margin: 0, minWidth: '350px' }}>
           {showLeftArrow && (
             <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px' }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
           )}
           <nav style={{ flex: '0 1 auto', overflow: 'hidden' }}>
-            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '0 10px', gap: '1.2rem', margin: 0, alignItems: 'center' }}>
+            <ul ref={navRef} onScroll={cekPanah} style={{ display: 'flex', gap: '1.5rem', padding: '0 10px', margin: 0, alignItems: 'center' }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9', whiteSpace: 'nowrap' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog" style={{ whiteSpace: 'nowrap' }}>Katalog</a></li>
               <li><a href="#berita" style={{ whiteSpace: 'nowrap' }}>Berita</a></li>
