@@ -6,11 +6,11 @@ export default function ClientPage() {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // STATE SEARCH NAVBAR (KONTEN WEB)
+  // STATE SEARCH NAVBAR
   const [searchWebQuery, setSearchWebQuery] = useState('');
   const [showWebResults, setShowWebResults] = useState(false);
 
-  // STATE SEARCH E-KATALOG (KHUSUS E-BOOK)
+  // STATE SEARCH E-KATALOG
   const [searchKatalogQuery, setSearchKatalogQuery] = useState('');
   const [showKatalogResults, setShowKatalogResults] = useState(false);
 
@@ -19,7 +19,11 @@ export default function ClientPage() {
   const [randomBuku, setRandomBuku] = useState([]); 
   const [isFetching, setIsFetching] = useState(true);
 
-  // DATABASE KONTEN WEB
+  // === STATE DATABASE BERITA DARI CMS ===
+  const [beritaData, setBeritaData] = useState([]);
+  const [isBeritaLoading, setIsBeritaLoading] = useState(true);
+
+  // DATABASE KONTEN WEB UNTUK SEARCH
   const databaseWeb = [
     { judul: 'E-Katalog Perpustakaan', deskripsi: 'Akses ratusan modul pembelajaran, buku literatur, novel, dan kumpulan ebook internal sekolah.', link: '#katalog', icon: '📚' },
     { judul: 'Profil & Visi Misi', deskripsi: 'Semangat Pagi (Prestasi Anak Negeri). Menjadikan perpustakaan sebagai jantung pendidikan yang mencetak generasi literat, unggul, dan berwawasan global.', link: '#profil', icon: '🎯' },
@@ -38,25 +42,35 @@ export default function ClientPage() {
   };
 
   useEffect(() => {
+    // 1. Tarik Data Buku dari Google Script
     const fetchDataDrive = async () => {
       try {
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
-        
         setDbBuku(data);
-        
-        // Ngacak buku untuk pajangan thumbnail
         const acakData = [...data].sort(() => 0.5 - Math.random());
         setRandomBuku(acakData.slice(0, 10)); 
-
       } catch (error) {
         console.error("Gagal memuat database perpustakaan dari Drive.");
       }
       setIsFetching(false);
     };
 
+    // 2. Tarik Data Berita dari API Github CMS lu
+    const fetchBerita = async () => {
+      try {
+        const res = await fetch('/api/berita');
+        const data = await res.json();
+        setBeritaData(data);
+      } catch (error) {
+        console.error("Gagal load berita dari CMS.");
+      }
+      setIsBeritaLoading(false);
+    };
+
     fetchDataDrive();
+    fetchBerita(); // Panggil fungsi narik berita
     
     cekPanah();
     window.addEventListener('resize', cekPanah);
@@ -69,7 +83,6 @@ export default function ClientPage() {
     }
   };
 
-  // LOGIKA PENCARIAN
   const hasilCariWeb = databaseWeb.filter(item => 
     item.judul.toLowerCase().includes(searchWebQuery.toLowerCase()) ||
     item.deskripsi.toLowerCase().includes(searchWebQuery.toLowerCase())
@@ -79,52 +92,21 @@ export default function ClientPage() {
     buku.judul.toLowerCase().includes(searchKatalogQuery.toLowerCase())
   );
 
-  const ruangBaseStyle = {
-    padding: '10px',
-    borderRadius: '16px',
-    border: '1px solid rgba(255,255,255,0.5)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    fontWeight: '700',
-    fontSize: '0.8rem',
-    color: '#0f172a',
-    backdropFilter: 'blur(8px)'
-  };
+  const ruangBaseStyle = { padding: '10px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontWeight: '700', fontSize: '0.8rem', color: '#0f172a', backdropFilter: 'blur(8px)' };
 
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
       {/* NAVBAR */}
       <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '2px', padding: '10px 15px 2px 15px', borderRadius: '24px' }}>
-        
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
           <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px' }}>
             <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
             <div className="title" style={{ fontSize: '0.95rem' }}>Perpus SMPN 1 Damai</div>
           </div>
-
-          {/* SEARCH ATAS (KONTEN WEB) */}
           <div style={{ position: 'relative', flex: 1, maxWidth: '220px' }}>
             <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
-            <input 
-              type="text" 
-              placeholder="Cari info web..." 
-              value={searchWebQuery}
-              onChange={(e) => setSearchWebQuery(e.target.value)}
-              onFocus={() => setShowWebResults(true)}
-              onBlur={() => setTimeout(() => setShowWebResults(false), 200)} 
-              style={{ 
-                width: '100%', padding: '7px 15px 7px 32px', borderRadius: '24px', 
-                border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', 
-                outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem',
-                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease'
-              }} 
-            />
-
-            {/* DROPDOWN HASIL KONTEN WEB */}
+            <input type="text" placeholder="Cari info web..." value={searchWebQuery} onChange={(e) => setSearchWebQuery(e.target.value)} onFocus={() => setShowWebResults(true)} onBlur={() => setTimeout(() => setShowWebResults(false), 200)} style={{ width: '100%', padding: '7px 15px 7px 32px', borderRadius: '24px', border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease' }} />
             {showWebResults && (
               <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', right: 0, width: '260px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
                 {searchWebQuery === '' ? (
@@ -146,12 +128,9 @@ export default function ClientPage() {
             )}
           </div>
         </div>
-
         <div className="nav-wrapper" style={{ width: '100%', maxWidth: '100%', justifyContent: 'flex-start', padding: 0 }}>
           {showLeftArrow && (
-            <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px' }}>
-              <i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i>
-            </button>
+            <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px' }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
           )}
           <nav>
             <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 0', gap: '1.2rem', margin: 0 }}>
@@ -166,9 +145,7 @@ export default function ClientPage() {
             </ul>
           </nav>
           {showRightArrow && (
-            <button className="nav-arrow right" onClick={() => scrollNav(100)} style={{ display: 'flex', width: '28px', height: '28px' }}>
-              <i className="fa-solid fa-chevron-right" style={{ fontSize: '0.8rem' }}></i>
-            </button>
+            <button className="nav-arrow right" onClick={() => scrollNav(100)} style={{ display: 'flex', width: '28px', height: '28px' }}><i className="fa-solid fa-chevron-right" style={{ fontSize: '0.8rem' }}></i></button>
           )}
         </div>
       </header>
@@ -187,37 +164,20 @@ export default function ClientPage() {
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
+        {/* ======================================================= */}
         {/* SECTION 1: E-KATALOG */}
+        {/* ======================================================= */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog</h2>
-          <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>
-            Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.
-          </p>
+          <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
 
           <div style={{ position: 'relative', width: '100%', maxWidth: '400px', margin: '0 auto 25px' }}>
             <i className="fa-solid fa-book-open" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9' }}></i>
-            <input 
-              type="text" 
-              placeholder="Cari E-Book di sini..." 
-              value={searchKatalogQuery}
-              onChange={(e) => setSearchKatalogQuery(e.target.value)}
-              onFocus={() => setShowKatalogResults(true)}
-              onBlur={() => setTimeout(() => setShowKatalogResults(false), 200)}
-              style={{ 
-                width: '100%', padding: '12px 20px 12px 45px', borderRadius: '24px', 
-                border: '2px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.7)', 
-                outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.95rem',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
-              }} 
-            />
-
+            <input type="text" placeholder="Cari E-Book di sini..." value={searchKatalogQuery} onChange={(e) => setSearchKatalogQuery(e.target.value)} onFocus={() => setShowKatalogResults(true)} onBlur={() => setTimeout(() => setShowKatalogResults(false), 200)} style={{ width: '100%', padding: '12px 20px 12px 45px', borderRadius: '24px', border: '2px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.7)', outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.95rem', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} />
             {showKatalogResults && (
               <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', left: 0, width: '100%', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 999 }}>
                 {isFetching ? (
-                  <div style={{ textAlign: 'center', padding: '20px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>
-                    <i className="fa-solid fa-spinner fa-spin" style={{ marginBottom: '8px', fontSize: '1.2rem', color: '#0ea5e9' }}></i>
-                    <br />Mensinkronkan ke Rak Google Drive...
-                  </div>
+                  <div style={{ textAlign: 'center', padding: '20px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}><i className="fa-solid fa-spinner fa-spin" style={{ marginBottom: '8px', fontSize: '1.2rem', color: '#0ea5e9' }}></i><br />Mensinkronkan ke Rak Google Drive...</div>
                 ) : searchKatalogQuery === '' ? (
                   <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik judul buku yang dicari...</div>
                 ) : hasilCariKatalog.length > 0 ? (
@@ -239,16 +199,12 @@ export default function ClientPage() {
 
           <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', padding: '10px 5px 20px', width: '100%', WebkitOverflowScrolling: 'touch' }}>
             {isFetching ? (
-              <div style={{ margin: '0 auto', textAlign: 'center', color: '#64748b', fontWeight: 'bold', fontSize: '0.9rem' }}>
-                <i className="fa-solid fa-spinner fa-spin" style={{ color: '#0ea5e9', marginRight: '5px' }}></i> Menyusun buku di rak...
-              </div>
+              <div style={{ margin: '0 auto', textAlign: 'center', color: '#64748b', fontWeight: 'bold', fontSize: '0.9rem' }}><i className="fa-solid fa-spinner fa-spin" style={{ color: '#0ea5e9', marginRight: '5px' }}></i> Menyusun buku di rak...</div>
             ) : randomBuku.length > 0 ? (
               randomBuku.map((buku, index) => (
                 <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ flex: '0 0 auto', width: '100px', textDecoration: 'none', textAlign: 'center' }}>
                   <img src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w200`} alt="cover" style={{ width: '100px', height: '140px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', border: '2px solid white', backgroundColor: '#e2e8f0' }} />
-                  <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#0f172a', marginTop: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.2' }}>
-                    {buku.judul}
-                  </div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#0f172a', marginTop: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.2' }}>{buku.judul}</div>
                 </a>
               ))
             ) : (
@@ -257,23 +213,43 @@ export default function ClientPage() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', marginTop: '20px', width: '100%' }}>
-            <a href="https://linktr.ee/BacaKuy" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '300px', padding: '14px', background: '#0ea5e9', color: 'white', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', border: '2px solid #38bdf8', boxShadow: '0 5px 15px rgba(14, 165, 233, 0.2)' }}>
-              📚 E-Book SIBI (Nasional)
-            </a>
+            <a href="https://linktr.ee/BacaKuy" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '300px', padding: '14px', background: '#0ea5e9', color: 'white', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', border: '2px solid #38bdf8', boxShadow: '0 5px 15px rgba(14, 165, 233, 0.2)' }}>📚 E-Book SIBI (Nasional)</a>
           </div>
         </section>
 
         {/* ======================================================= */}
-        {/* SECTION 2: BERITA TERBARU (DIKOSONGIN SEMENTARA)        */}
+        {/* SECTION 2: BERITA TERBARU (OTOMATIS DARI CMS GITHUB)    */}
         {/* ======================================================= */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
           
-          <div style={{ background: 'rgba(255,255,255,0.4)', padding: '30px 20px', borderRadius: '16px', textAlign: 'center', border: '2px dashed rgba(255,255,255,0.8)' }}>
-            <i className="fa-solid fa-newspaper" style={{ fontSize: '2.5rem', color: '#94a3b8', marginBottom: '10px' }}></i>
-            <p style={{ color: '#64748b', fontWeight: '600', fontSize: '0.95rem' }}>Belum ada berita terbaru saat ini.</p>
-          </div>
-          
+          {isBeritaLoading ? (
+            <div style={{ textAlign: 'center', padding: '30px', color: '#64748b', fontWeight: 'bold' }}>
+              <i className="fa-solid fa-spinner fa-spin" style={{ fontSize: '2rem', color: '#0ea5e9', marginBottom: '10px' }}></i>
+              <p>Mencari koran hari ini...</p>
+            </div>
+          ) : beritaData.length === 0 ? (
+            <div style={{ background: 'rgba(255,255,255,0.4)', padding: '30px 20px', borderRadius: '16px', textAlign: 'center', border: '2px dashed rgba(255,255,255,0.8)' }}>
+              <i className="fa-solid fa-newspaper" style={{ fontSize: '2.5rem', color: '#94a3b8', marginBottom: '10px' }}></i>
+              <p style={{ color: '#64748b', fontWeight: '600', fontSize: '0.95rem' }}>Belum ada berita terbaru saat ini.</p>
+            </div>
+          ) : (
+            <div className="news-grid">
+              {beritaData.map((berita, index) => (
+                <div key={index} className="news-card">
+                  <img src={berita.thumbnail} alt={berita.judul} className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+                  <div className="news-content">
+                    <div className="news-date">{berita.tanggal}</div>
+                    <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{berita.judul}</h3>
+                    <p className="news-snippet" style={{ textAlign: 'justify', fontSize: '0.85rem' }}>{berita.snippet}</p>
+                    
+                    {/* Link ke halaman detail berita, siap-siap buat file page-nya nanti bre! */}
+                    <a href={`/berita/${berita.id}`} className="btn-baca">Baca Selengkapnya</a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* SECTION 3: PROFIL & VISI MISI */}
@@ -333,32 +309,25 @@ export default function ClientPage() {
         <section id="struktur" className="section-card glass" style={{ overflowX: 'hidden' }}>
           <h2 className="section-title">Struktur Organisasi</h2>
           <p style={{ marginBottom: '20px', textAlign: 'justify' }}>Susunan kepengurusan Perpustakaan Semangat Pagi SMPN 1 Damai:</p>
-          
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
-            
             <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', width: '100%', maxWidth: '250px' }}>
               <img src="/gambar/Sri Wahyuningsih.jpeg" alt="Kepala Sekolah" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
               <div style={{ fontWeight: '800', marginTop: '10px', color: '#0f172a' }}>Sri Wahyuningsih, S.Pd</div>
               <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 10px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Kepala Sekolah</div>
             </div>
-            
             <div style={{ width: '3px', height: '20px', background: 'white' }}></div>
-
             <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', width: '100%', maxWidth: '250px' }}>
               <img src="/gambar/Mina Sari.jpeg" alt="Kepala Perpustakaan" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
               <div style={{ fontWeight: '800', marginTop: '10px', color: '#0f172a' }}>Mina Sari</div>
               <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 10px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Kepala Perpustakaan</div>
             </div>
-
             <div style={{ width: '3px', height: '20px', background: 'white' }}></div>
-
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: '15px', width: '100%' }}>
               <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', flex: '1', minWidth: '130px', maxWidth: '250px' }}>
                 <img src="/gambar/Meltiana.jpeg" alt="Layanan Pembaca" style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
                 <div style={{ fontWeight: '800', marginTop: '10px', fontSize: '0.9rem', color: '#0f172a' }}>Meltiana</div>
                 <div style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#0f172a', background: 'white', padding: '3px 8px', borderRadius: '10px', display: 'inline-block', marginTop: '5px' }}>Layanan Pembaca</div>
               </div>
-
               <div style={{ textAlign: 'center', background: 'rgba(255,255,255,0.4)', padding: '15px', borderRadius: '20px', flex: '1', minWidth: '130px', maxWidth: '250px' }}>
                 <img src="/gambar/Nur Alfi Syahri.jpg" alt="Layanan Teknis TIK" style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '50%', border: '3px solid white', margin: '0 auto', display: 'block', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }} />
                 <div style={{ fontWeight: '800', marginTop: '10px', fontSize: '0.9rem', color: '#0f172a' }}>Nur Alfi Syahri, S.P.</div>
@@ -372,22 +341,8 @@ export default function ClientPage() {
         <section id="denah" className="section-card glass">
           <h2 className="section-title">Denah Ruangan</h2>
           <p style={{ marginBottom: '2rem', textAlign: 'justify' }}>Tata letak fasilitas dan area koleksi perpustakaan Semangat Pagi:</p>
-          
           <div style={{ overflowX: 'auto', width: '100%', paddingBottom: '15px', WebkitOverflowScrolling: 'touch', background: 'rgba(255,255,255,0.15)', borderRadius: '24px', padding: '15px' }}>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateAreas: `
-                "pintu petugas pohon koran"
-                "komputer lesehan lesehan lesehan"
-                "rak1 rak1 rak2 rak2"
-                "introvert rak_v rak_v kelompok"
-                "rak_b rak_b rak_b rak_b"
-              `,
-              gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr',
-              gridAutoRows: 'minmax(85px, auto)',
-              gap: '12px',
-              minWidth: '700px'
-            }}>
+            <div style={{ display: 'grid', gridTemplateAreas: ` "pintu petugas pohon koran" "komputer lesehan lesehan lesehan" "rak1 rak1 rak2 rak2" "introvert rak_v rak_v kelompok" "rak_b rak_b rak_b rak_b" `, gridTemplateColumns: '1.2fr 1fr 1fr 1.2fr', gridAutoRows: 'minmax(85px, auto)', gap: '12px', minWidth: '700px' }}>
               <div style={{ ...ruangBaseStyle, gridArea: 'pintu', background: 'rgba(255,255,255,0.8)', border: '2px solid white' }}><div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>🚪</div>Pintu Masuk & Loker</div>
               <div style={{ ...ruangBaseStyle, gridArea: 'petugas', background: 'rgba(14, 165, 233, 0.3)' }}><div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>👨‍💼</div>Meja Petugas</div>
               <div style={{ ...ruangBaseStyle, gridArea: 'pohon', background: 'rgba(251, 146, 60, 0.3)' }}><div style={{ fontSize: '1.6rem', marginBottom: '4px' }}>🌳</div>Pohon Literasi</div>
@@ -409,21 +364,14 @@ export default function ClientPage() {
           <h2 className="section-title">Kontak</h2>
           <p style={{ color: '#1e293b', fontWeight: '500', marginBottom: '20px' }}>Punya pertanyaan atau masukan seputar layanan perpustakaan Semangat Pagi? Silakan hubungi kami:</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', justifyContent: 'center' }}>
-            <a href="mailto:smpn1damai@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '1rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#0ea5e9'} onMouseOut={(e) => e.target.style.color = '#0f172a'}>
-              <i className="fa-solid fa-envelope" style={{ color: '#0ea5e9', fontSize: '1.2rem' }}></i> smpn1damai@gmail.com
-            </a>
-            <a href="https://instagram.com/smpn1damai" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '1rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#ec4899'} onMouseOut={(e) => e.target.style.color = '#0f172a'}>
-              <i className="fa-brands fa-instagram" style={{ color: '#ec4899', fontSize: '1.2rem' }}></i> @smpn1damai
-            </a>
+            <a href="mailto:smpn1damai@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '1rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#0ea5e9'} onMouseOut={(e) => e.target.style.color = '#0f172a'}><i className="fa-solid fa-envelope" style={{ color: '#0ea5e9', fontSize: '1.2rem' }}></i> smpn1damai@gmail.com</a>
+            <a href="https://instagram.com/smpn1damai" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '1rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#ec4899'} onMouseOut={(e) => e.target.style.color = '#0f172a'}><i className="fa-brands fa-instagram" style={{ color: '#ec4899', fontSize: '1.2rem' }}></i> @smpn1damai</a>
           </div>
         </section>
 
       </div>
 
-      {/* FOOTER */}
-      <footer style={{ textAlign: 'center', padding: '20px', marginTop: '1rem', fontSize: '0.9rem', fontWeight: 600, color: '#64748b' }}>
-        &copy; 2026 | Admin Web: Nur Alfi Syahri, S.P.
-      </footer>
+      <footer style={{ textAlign: 'center', padding: '20px', marginTop: '1rem', fontSize: '0.9rem', fontWeight: 600, color: '#64748b' }}>&copy; 2026 | Admin Web: Nur Alfi Syahri, S.P.</footer>
     </div>
   );
 }
