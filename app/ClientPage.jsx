@@ -39,7 +39,7 @@ export default function ClientPage() {
       setIsFetching(true);
       try {
         // PASTE URL GOOGLE SCRIPT LU DI SINI
-        const API_URL = "https://script.google.com/macros/s/GANTI_DENGAN_URL_GAS_LU/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
         setDbBuku(data);
