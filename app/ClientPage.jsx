@@ -42,14 +42,14 @@ export default function ClientPage() {
   useEffect(() => {
     const fetchDataDrive = async () => {
       try {
-        // ⚠️ JANGAN LUPA PASTE URL GOOGLE SCRIPT LU DI BAWAH SINI!
+        // 🔥 URL GAS ASLI LU UDAH DIPASANG DI SINI 🔥
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
         
         setDbBuku(data);
         
-        // Ngacak buku
+        // Ngacak buku untuk pajangan thumbnail
         const acakData = [...data].sort(() => 0.5 - Math.random());
         setRandomBuku(acakData.slice(0, 10)); 
 
@@ -100,8 +100,8 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* NAVBAR (SHAPE BORDER RADIUS UDAH DISAMAIN JADI 24PX) */}
-      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '6px', padding: '12px 16px', borderRadius: '24px' }}>
+      {/* NAVBAR DI-DIET-IN: Gap dan Padding bawah dikurangin ekstrim biar rapi dan rapat */}
+      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '2px', padding: '10px 15px 2px 15px', borderRadius: '24px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
           <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px' }}>
@@ -120,7 +120,7 @@ export default function ClientPage() {
               onFocus={() => setShowWebResults(true)}
               onBlur={() => setTimeout(() => setShowWebResults(false), 200)} 
               style={{ 
-                width: '100%', padding: '8px 15px 8px 32px', borderRadius: '24px', 
+                width: '100%', padding: '7px 15px 7px 32px', borderRadius: '24px', 
                 border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', 
                 outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem',
                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease'
@@ -157,7 +157,7 @@ export default function ClientPage() {
             </button>
           )}
           <nav>
-            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '0 40px 0 30px', gap: '1rem' }}>
+            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 40px 4px 30px', gap: '1rem', margin: 0 }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog">Katalog</a></li>
               <li><a href="#profil">Profil</a></li>
@@ -190,9 +190,7 @@ export default function ClientPage() {
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
-        {/* ======================================================= */}
-        {/* SECTION 1: E-KATALOG (DIKEMBALIKAN KE PALING ATAS LAGI) */}
-        {/* ======================================================= */}
+        {/* SECTION 1: E-KATALOG */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>
