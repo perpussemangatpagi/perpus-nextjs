@@ -25,9 +25,41 @@ export default function ClientPage() {
     }
   };
 
-  const handleSearch = (e) => {
+ const handleSearch = async (e) => {
     if (e.key === 'Enter') {
-      alert(`Mencari: ${e.target.value}\n(Nanti disambung ke Google Drive!)`);
+      const kataKunci = e.target.value.toLowerCase();
+      if (!kataKunci) return;
+
+      // Ubah teks tombol jadi loading biar interaktif
+      e.target.value = "Sedang mencari di rak...";
+      e.target.disabled = true;
+
+      try {
+        // PASTE LINK WEB APP URL DARI GOOGLE SCRIPT DI SINI!
+        const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec"; 
+        
+        const response = await fetch(API_URL);
+        const bukuBuku = await response.json();
+        
+        // Proses mencari buku yang cocok sama ketikan lu
+        const hasilCari = bukuBuku.filter(buku => buku.judul.toLowerCase().includes(kataKunci));
+
+        e.target.value = kataKunci; // Balikin ketikan asli
+        e.target.disabled = false;
+
+        if (hasilCari.length > 0) {
+          // Kalo ketemu, langsung buka tab baru ke PDF pertama yang cocok
+          if (confirm(`Ketemu ${hasilCari.length} buku! Buku pertama: "${hasilCari[0].judul}". Mau langsung buka?`)) {
+            window.open(hasilCari[0].link, '_blank');
+          }
+        } else {
+          alert('Waduh, bukunya belum ada di Google Drive nih bre!');
+        }
+      } catch (error) {
+        alert('Gagal konek ke Google Drive. Coba lagi!');
+        e.target.value = kataKunci;
+        e.target.disabled = false;
+      }
     }
   };
 
