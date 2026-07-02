@@ -83,60 +83,134 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* NAVBAR VERSI DESKTOP & MOBILE (PRESISI 1 BARIS DI DESKTOP) */}
-      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', padding: '8px 20px', borderRadius: '50px', gap: '15px' }}>
+      {/* ======================================================= */}
+      {/* CSS INJECTOR KHUSUS NAVBAR BIAR MENANG LAWAN GLOBALS.CSS */}
+      {/* ======================================================= */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .perpus-navbar {
+          position: sticky;
+          top: 15px;
+          z-index: 999;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 20px;
+          border-radius: 50px;
+          gap: 15px;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        /* Trik sakti: di PC bungkusnya ngilang biar anak-anaknya sejajar */
+        .perpus-nav-mobile-top {
+          display: contents; 
+        }
+        .perpus-logo {
+          order: 1;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-shrink: 0;
+        }
+        .perpus-menu {
+          order: 2;
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          min-width: 0;
+          width: auto !important; /* Paksa matiin width: 100% dari CSS bawaan lu */
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+        }
+        .perpus-search {
+          order: 3;
+          position: relative;
+          width: 250px;
+          flex-shrink: 0;
+        }
+        .perpus-scroll-hidden::-webkit-scrollbar { display: none; }
+        .perpus-scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; overflow-x: auto; }
         
-        {/* KIRI: Logo */}
-        <div className="nav-brand" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px', flex: '1 1 auto', minWidth: 'max-content' }}>
-          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
-          <div className="title" style={{ fontSize: '0.95rem', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Perpus SMPN 1 Damai</div>
+        /* MODE HP/TABLET */
+        @media (max-width: 900px) {
+          .perpus-navbar {
+            flex-direction: column;
+            border-radius: 24px;
+            padding: 12px 15px 4px 15px;
+            gap: 10px;
+          }
+          .perpus-nav-mobile-top {
+            display: flex; /* Bungkusnya muncul lagi di HP */
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            order: 1;
+          }
+          .perpus-logo { order: unset; flex: 1; }
+          .perpus-search { order: unset; width: 100%; max-width: 220px; flex-shrink: 1; }
+          .perpus-menu { order: 2; width: 100% !important; justify-content: flex-start; }
+        }
+      `}} />
+
+      {/* NAVBAR */}
+      <header className="header-container glass perpus-navbar">
+        
+        <div className="perpus-nav-mobile-top">
+          {/* KIRI: Logo */}
+          <div className="perpus-logo nav-brand" style={{ margin: 0 }}>
+            <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
+            <div className="title" style={{ fontSize: '0.95rem', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Perpus SMPN 1 Damai</div>
+          </div>
+
+          {/* KANAN: Search (Di HP nempatin sebelah logo, di PC otomatis geser ke ujung kanan) */}
+          <div className="perpus-search">
+            <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
+            <input 
+              type="text" 
+              placeholder="Cari info web..." 
+              value={searchWebQuery}
+              onChange={(e) => setSearchWebQuery(e.target.value)}
+              onFocus={() => setShowWebResults(true)}
+              onBlur={() => setTimeout(() => setShowWebResults(false), 200)} 
+              style={{ 
+                width: '100%', padding: '8px 15px 8px 32px', borderRadius: '50px', 
+                border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', 
+                outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem',
+                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease'
+              }} 
+            />
+            {showWebResults && (
+              <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '120%', right: 0, width: '280px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
+                {searchWebQuery === '' ? (
+                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik nama, berita...</div>
+                ) : hasilCariWeb.length > 0 ? (
+                  hasilCariWeb.map((item, index) => (
+                    <a key={index} href={item.link} onClick={() => setShowWebResults(false)} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '12px 10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
+                      <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: '800' }}>{item.judul}</span>
+                        <span style={{ fontSize: '0.7rem', color: '#64748b', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px' }}>{item.deskripsi}</span>
+                      </div>
+                    </a>
+                  ))
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Info tidak ditemukan bre 😢</div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* TENGAH: Search */}
-        <div style={{ position: 'relative', flex: '1 1 auto', maxWidth: '300px', minWidth: '150px' }}>
-          <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
-          <input 
-            type="text" 
-            placeholder="Cari info web..." 
-            value={searchWebQuery}
-            onChange={(e) => setSearchWebQuery(e.target.value)}
-            onFocus={() => setShowWebResults(true)}
-            onBlur={() => setTimeout(() => setShowWebResults(false), 200)} 
-            style={{ 
-              width: '100%', padding: '8px 15px 8px 35px', borderRadius: '50px', 
-              border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', 
-              outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem',
-              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease'
-            }} 
-          />
-          {showWebResults && (
-            <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '120%', left: 0, width: '100%', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
-              {searchWebQuery === '' ? (
-                <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik nama, berita...</div>
-              ) : hasilCariWeb.length > 0 ? (
-                hasilCariWeb.map((item, index) => (
-                  <a key={index} href={item.link} onClick={() => setShowWebResults(false)} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '12px 10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
-                    <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: '800' }}>{item.judul}</span>
-                      <span style={{ fontSize: '0.7rem', color: '#64748b', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px' }}>{item.deskripsi}</span>
-                    </div>
-                  </a>
-                ))
-              ) : (
-                <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Info tidak ditemukan bre 😢</div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* KANAN: Menu Navigasi */}
-        <div className="nav-wrapper" style={{ flex: '2 1 auto', display: 'flex', justifyContent: 'flex-end', background: 'transparent', border: 'none', padding: 0, margin: 0, minWidth: '350px' }}>
+        {/* TENGAH: Menu Navigasi (Di PC diam di tengah barisan) */}
+        <div className="nav-wrapper perpus-menu">
           {showLeftArrow && (
-            <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px' }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
+            <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px', flexShrink: 0 }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
           )}
-          <nav style={{ flex: '0 1 auto', overflow: 'hidden' }}>
-            <ul ref={navRef} onScroll={cekPanah} style={{ display: 'flex', gap: '1.5rem', padding: '0 10px', margin: 0, alignItems: 'center' }}>
+          <nav style={{ flex: '1 1 auto', overflow: 'hidden' }}>
+            <ul ref={navRef} onScroll={cekPanah} className="perpus-scroll-hidden" style={{ display: 'flex', gap: '1.5rem', padding: '0 10px', margin: 0, alignItems: 'center' }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9', whiteSpace: 'nowrap' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog" style={{ whiteSpace: 'nowrap' }}>Katalog</a></li>
               <li><a href="#berita" style={{ whiteSpace: 'nowrap' }}>Berita</a></li>
@@ -148,7 +222,7 @@ export default function ClientPage() {
             </ul>
           </nav>
           {showRightArrow && (
-            <button className="nav-arrow right" onClick={() => scrollNav(100)} style={{ display: 'flex', width: '28px', height: '28px' }}><i className="fa-solid fa-chevron-right" style={{ fontSize: '0.8rem' }}></i></button>
+            <button className="nav-arrow right" onClick={() => scrollNav(100)} style={{ display: 'flex', width: '28px', height: '28px', flexShrink: 0 }}><i className="fa-solid fa-chevron-right" style={{ fontSize: '0.8rem' }}></i></button>
           )}
         </div>
       </header>
