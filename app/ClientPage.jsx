@@ -25,10 +25,9 @@ export default function ClientPage() {
     }
   };
 
-  // Fungsi Dummy untuk Enter di Search Bar (Bisa lu ubah nanti ke API lu)
   const handleSearch = (e) => {
     if (e.key === 'Enter') {
-      alert(`Mencari E-Book: ${e.target.value}\n(Nanti fitur ini disambung ke Google Drive lu bre!)`);
+      alert(`Mencari: ${e.target.value}\n(Nanti disambung ke Google Drive!)`);
     }
   };
 
@@ -50,10 +49,8 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* HEADER NAVBAR - DIROMBAK JADI 2 BARIS COMPACT */}
       <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px 15px' }}>
         
-        {/* BARIS ATAS: Logo Perpus & Kolom Search */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
           
           <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px' }}>
@@ -65,7 +62,7 @@ export default function ClientPage() {
             <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
             <input 
               type="text" 
-              placeholder="Cari E-Book..." 
+              placeholder="Cari" 
               onKeyDown={handleSearch}
               style={{ 
                 width: '100%', 
@@ -76,7 +73,7 @@ export default function ClientPage() {
                 outline: 'none', 
                 color: '#0f172a', 
                 fontWeight: '600', 
-                fontSize: '0.8rem',
+                fontSize: '0.85rem',
                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
                 transition: 'all 0.3s ease'
               }} 
@@ -87,7 +84,6 @@ export default function ClientPage() {
 
         </div>
 
-        {/* BARIS BAWAH: Navigasi Menu Scroll */}
         <div className="nav-wrapper" style={{ width: '100%', maxWidth: '100%', justifyContent: 'flex-start', padding: 0 }}>
           {showLeftArrow && (
             <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px' }}>
@@ -114,7 +110,6 @@ export default function ClientPage() {
         </div>
       </header>
 
-      {/* HERO */}
       <header className="hero">
         <div className="hero-logos" style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
           <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
@@ -128,7 +123,6 @@ export default function ClientPage() {
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
-        {/* PROFIL & VISI MISI */}
         <section id="profil" className="section-card glass">
           <h2 className="section-title">Profil & Visi Misi</h2>
           <p style={{ marginBottom: '2rem' }}>
@@ -150,7 +144,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* INFO & TATA TERTIB */}
         <section id="info" className="section-card glass">
           <h2 className="section-title">Informasi & Tata Tertib</h2>
           <div className="grid-2">
@@ -181,7 +174,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* BERITA TERBARU */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
           <div className="news-grid">
@@ -207,7 +199,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* STRUKTUR ORGANISASI */}
         <section id="struktur" className="section-card glass" style={{ overflowX: 'hidden' }}>
           <h2 className="section-title">Struktur Organisasi</h2>
           <p style={{ marginBottom: '20px' }}>Susunan kepengurusan Perpustakaan Semangat Pagi SMPN 1 Damai:</p>
@@ -248,7 +239,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* DENAH RUANGAN */}
         <section id="denah" className="section-card glass">
           <h2 className="section-title">Denah Ruangan</h2>
           <p style={{ marginBottom: '2rem' }}>Tata letak fasilitas dan area koleksi perpustakaan Semangat Pagi:</p>
@@ -314,7 +304,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* GALERI */}
         <section id="galeri" className="section-card glass">
           <h2 className="section-title">Galeri Kegiatan</h2>
           <p style={{ marginBottom: '15px' }}>Dokumentasi aktivitas, penataan perpustakaan, digitalisasi katalog, serta kreativitas siswa/siswi SMPN 1 Damai.</p>
@@ -329,7 +318,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* KATALOG */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog Digital</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto', color: '#1e293b', fontSize: '1rem', fontWeight: 500 }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
@@ -349,7 +337,8 @@ export default function ClientPage() {
 
       </div>
 
-      <footer className="glass" style={{ textAlign: 'center', padding: '1.5rem', margin: '2rem auto', width: '90%', maxWidth: '600px', borderRadius: '30px', fontSize: '0.9rem', fontWeight: 600, color: '#334155' }}>
+      {/* FOOTER DIPOLOSIN KAYAK WEB UTAMA */}
+      <footer style={{ textAlign: 'center', padding: '20px', marginTop: '1rem', fontSize: '0.9rem', fontWeight: 600, color: '#64748b' }}>
         &copy; 2026 | Admin Web: Nur Alfi Syahri, S.P.
       </footer>
     </div>
