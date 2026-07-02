@@ -6,28 +6,30 @@ export default function ClientPage() {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // === STATE UNTUK SEARCH ATAS (KONTEN WEB) ===
+  // STATE SEARCH NAVBAR (KONTEN WEB)
   const [searchWebQuery, setSearchWebQuery] = useState('');
   const [showWebResults, setShowWebResults] = useState(false);
 
-  // === STATE UNTUK SEARCH BAWAH (E-BOOK KATALOG) ===
+  // STATE SEARCH E-KATALOG (KHUSUS E-BOOK)
   const [searchKatalogQuery, setSearchKatalogQuery] = useState('');
   const [showKatalogResults, setShowKatalogResults] = useState(false);
 
-  // === STATE DATABASE GOOGLE DRIVE ===
+  // DATABASE BUKU
   const [dbBuku, setDbBuku] = useState([]);
+  const [randomBuku, setRandomBuku] = useState([]); // State khusus buat buku yang diacak
   const [isFetching, setIsFetching] = useState(true);
 
-  // Daftar Konten Web untuk Search Atas
-  const kontenWeb = [
-    { judul: 'Profil & Visi Misi', link: '#profil', icon: '🎯' },
-    { judul: 'Tata Tertib & Jam Operasional', link: '#info', icon: '⏰' },
-    { judul: 'Berita & Info Terbaru', link: '#berita', icon: '📰' },
-    { judul: 'Struktur Organisasi', link: '#struktur', icon: '👥' },
-    { judul: 'Denah Ruangan', link: '#denah', icon: '🗺️' },
-    { judul: 'Galeri Kegiatan', link: '#galeri', icon: '📸' },
-    { judul: 'E-Katalog Digital (E-Book)', link: '#katalog', icon: '📚' },
-    { judul: 'Kontak & Sosial Media', link: '#kontak', icon: '📞' }
+  // DATABASE KONTEN WEB (Biar search-nya pintar)
+  const databaseWeb = [
+    { judul: 'Visi Perpustakaan', deskripsi: 'Menjadikan perpustakaan sebagai jantung pendidikan yang mencetak generasi literat, unggul, dan berwawasan global.', link: '#profil', icon: '🎯' },
+    { judul: 'Misi Perpustakaan', deskripsi: 'Menyediakan bahan bacaan berkualitas. Mengintegrasikan layanan E-Katalog. Menyelenggarakan program literasi.', link: '#profil', icon: '🚀' },
+    { judul: 'Jam Operasional', deskripsi: 'Buka setiap hari sekolah dengan jadwal 07.30 - 14.00 WITA.', link: '#info', icon: '⏰' },
+    { judul: 'Aturan Peminjaman', deskripsi: 'Maksimal meminjam 2 buku. Batas waktu pinjam 7 hari (bisa diperpanjang). Denda keterlambatan.', link: '#info', icon: '📖' },
+    { judul: 'Etika Perpustakaan', deskripsi: 'Wajib tertib & tenang. Dilarang makan/minum, dilarang berisik.', link: '#info', icon: '⚠️' },
+    { judul: 'Kunjungan Asesor Akreditasi', deskripsi: 'Berita: Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...', link: '/berita/kunjungan-asesor', icon: '📰' },
+    { judul: 'Penambahan Koleksi E-Book', deskripsi: 'Berita: Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog...', link: '/berita/koleksi-ebook-baru', icon: '📰' },
+    { judul: 'Struktur Organisasi', deskripsi: 'Susunan Kepengurusan: Kepala Sekolah, Kepala Perpustakaan, Layanan Pembaca, Layanan Teknis TIK.', link: '#struktur', icon: '👥' },
+    { judul: 'Kontak Kami', deskripsi: 'Email: smpn1damai@gmail.com dan Instagram: @smpn1damai', link: '#kontak', icon: '📞' }
   ];
 
   const cekPanah = () => {
@@ -40,11 +42,17 @@ export default function ClientPage() {
   useEffect(() => {
     const fetchDataDrive = async () => {
       try {
-        // ⚠️ JANGAN LUPA PASTE URL GOOGLE SCRIPT LU DI BAWAH SINI!
+        // ⚠️ JANGAN LUPA PASTE URL GOOGLE SCRIPT LU DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
+        
         setDbBuku(data);
+        
+        // NGACAK BUKU BIAR GAK ITU-ITU AJA YANG TAMPIL
+        const acakData = [...data].sort(() => 0.5 - Math.random());
+        setRandomBuku(acakData.slice(0, 10)); // Ambil 10 aja buat dipajang
+
       } catch (error) {
         console.error("Gagal memuat database perpustakaan dari Drive.");
       }
@@ -64,9 +72,10 @@ export default function ClientPage() {
     }
   };
 
-  // Filter Data
-  const hasilCariWeb = kontenWeb.filter(item => 
-    item.judul.toLowerCase().includes(searchWebQuery.toLowerCase())
+  // LOGIKA PENCARIAN (Cari di judul ATAU di deskripsi)
+  const hasilCariWeb = databaseWeb.filter(item => 
+    item.judul.toLowerCase().includes(searchWebQuery.toLowerCase()) ||
+    item.deskripsi.toLowerCase().includes(searchWebQuery.toLowerCase())
   );
   
   const hasilCariKatalog = dbBuku.filter(buku => 
@@ -120,16 +129,21 @@ export default function ClientPage() {
 
             {/* DROPDOWN HASIL KONTEN WEB */}
             {showWebResults && (
-              <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', right: 0, width: '250px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '300px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
-                {hasilCariWeb.length > 0 ? (
+              <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', right: 0, width: '260px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
+                {searchWebQuery === '' ? (
+                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik misi, berita, atau jadwal...</div>
+                ) : hasilCariWeb.length > 0 ? (
                   hasilCariWeb.map((item, index) => (
-                    <a key={index} href={item.link} onClick={() => setShowWebResults(false)} style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
-                      <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
-                      <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>{item.judul}</span>
+                    <a key={index} href={item.link} onClick={() => setShowWebResults(false)} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '12px 10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
+                      <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: '800' }}>{item.judul}</span>
+                        <span style={{ fontSize: '0.7rem', color: '#64748b', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: '2px' }}>{item.deskripsi}</span>
+                      </div>
                     </a>
                   ))
                 ) : (
-                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Konten tidak ditemukan</div>
+                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>Info tidak ditemukan bre 😢</div>
                 )}
               </div>
             )}
@@ -143,6 +157,7 @@ export default function ClientPage() {
             </button>
           )}
           <nav>
+            {/* LINK GALERI DIHAPUS DARI MENU */}
             <ul ref={navRef} onScroll={cekPanah} style={{ padding: '0 40px 0 30px', gap: '1rem' }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#profil">Profil</a></li>
@@ -330,28 +345,14 @@ export default function ClientPage() {
           </div>
         </section>
 
-        <section id="galeri" className="section-card glass">
-          <h2 className="section-title">Galeri Kegiatan</h2>
-          <p style={{ marginBottom: '15px', textAlign: 'justify' }}>Dokumentasi aktivitas, penataan perpustakaan, digitalisasi katalog, serta kreativitas siswa/siswi SMPN 1 Damai.</p>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
-            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Kegiatan 1" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
-            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.44 AM.jpeg" alt="Kegiatan 2" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
-            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.45 AM.jpeg" alt="Kegiatan 3" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
-            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Kegiatan 4" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
-            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.55 AM.jpeg" alt="Kegiatan 6" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
-            <img src="/gambar/WhatsApp Image 2026-05-30 at 10.42.19 AM.jpeg" alt="Kegiatan 10" style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '12px', border: '2px solid white' }} />
-          </div>
-        </section>
-
-        {/* E-KATALOG DENGAN SEARCH BAWAH KHUSUS BUKU */}
+        {/* E-KATALOG DENGAN SEARCH KHUSUS BUKU */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>
             Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.
           </p>
 
-          {/* SEARCH BAR BAWAH - KHUSUS E-BOOK */}
+          {/* SEARCH BAR KHUSUS E-BOOK */}
           <div style={{ position: 'relative', width: '100%', maxWidth: '400px', margin: '0 auto 25px' }}>
             <i className="fa-solid fa-book-open" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9' }}></i>
             <input 
@@ -369,7 +370,7 @@ export default function ClientPage() {
               }} 
             />
 
-            {/* DROPDOWN HASIL PENCARIAN E-BOOK */}
+            {/* DROPDOWN HASIL E-BOOK */}
             {showKatalogResults && (
               <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', left: 0, width: '100%', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 999 }}>
                 {isFetching ? (
@@ -377,6 +378,8 @@ export default function ClientPage() {
                     <i className="fa-solid fa-spinner fa-spin" style={{ marginBottom: '8px', fontSize: '1.2rem', color: '#0ea5e9' }}></i>
                     <br />Mensinkronkan ke Rak Google Drive...
                   </div>
+                ) : searchKatalogQuery === '' ? (
+                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik judul buku yang dicari...</div>
                 ) : hasilCariKatalog.length > 0 ? (
                   hasilCariKatalog.map((buku, index) => (
                     <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s', textAlign: 'left' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
@@ -394,13 +397,14 @@ export default function ClientPage() {
             )}
           </div>
 
+          {/* PAJANGAN THUMBNAIL (SUDAH DI-SHUFFLE ACAK) */}
           <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', padding: '10px 5px 20px', width: '100%', WebkitOverflowScrolling: 'touch' }}>
             {isFetching ? (
               <div style={{ margin: '0 auto', textAlign: 'center', color: '#64748b', fontWeight: 'bold', fontSize: '0.9rem' }}>
                 <i className="fa-solid fa-spinner fa-spin" style={{ color: '#0ea5e9', marginRight: '5px' }}></i> Menyusun buku di rak...
               </div>
-            ) : dbBuku.length > 0 ? (
-              dbBuku.slice(0, 10).map((buku, index) => (
+            ) : randomBuku.length > 0 ? (
+              randomBuku.map((buku, index) => (
                 <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ flex: '0 0 auto', width: '100px', textDecoration: 'none', textAlign: 'center' }}>
                   <img src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w200`} alt="cover" style={{ width: '100px', height: '140px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', border: '2px solid white', backgroundColor: '#e2e8f0' }} />
                   <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#0f172a', marginTop: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.2' }}>
