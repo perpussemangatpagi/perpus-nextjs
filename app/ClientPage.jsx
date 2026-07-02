@@ -16,19 +16,18 @@ export default function ClientPage() {
 
   // DATABASE BUKU
   const [dbBuku, setDbBuku] = useState([]);
-  const [randomBuku, setRandomBuku] = useState([]); // State khusus buat buku yang diacak
+  const [randomBuku, setRandomBuku] = useState([]); 
   const [isFetching, setIsFetching] = useState(true);
 
-  // DATABASE KONTEN WEB (Biar search-nya pintar)
+  // DATABASE KONTEN WEB (Udah di-upgrade otaknya, masukin nama orang & denah)
   const databaseWeb = [
-    { judul: 'Visi Perpustakaan', deskripsi: 'Menjadikan perpustakaan sebagai jantung pendidikan yang mencetak generasi literat, unggul, dan berwawasan global.', link: '#profil', icon: '🎯' },
-    { judul: 'Misi Perpustakaan', deskripsi: 'Menyediakan bahan bacaan berkualitas. Mengintegrasikan layanan E-Katalog. Menyelenggarakan program literasi.', link: '#profil', icon: '🚀' },
-    { judul: 'Jam Operasional', deskripsi: 'Buka setiap hari sekolah dengan jadwal 07.30 - 14.00 WITA.', link: '#info', icon: '⏰' },
-    { judul: 'Aturan Peminjaman', deskripsi: 'Maksimal meminjam 2 buku. Batas waktu pinjam 7 hari (bisa diperpanjang). Denda keterlambatan.', link: '#info', icon: '📖' },
-    { judul: 'Etika Perpustakaan', deskripsi: 'Wajib tertib & tenang. Dilarang makan/minum, dilarang berisik.', link: '#info', icon: '⚠️' },
+    { judul: 'Profil & Visi Misi', deskripsi: 'Semangat Pagi (Prestasi Anak Negeri). Menjadikan perpustakaan sebagai jantung pendidikan yang mencetak generasi literat, unggul, dan berwawasan global.', link: '#profil', icon: '🎯' },
+    { judul: 'Jam Operasional & Aturan', deskripsi: 'Buka setiap hari sekolah 07.30 - 14.00 WITA. Maksimal pinjam 2 buku selama 7 hari.', link: '#info', icon: '⏰' },
+    { judul: 'Etika Perpustakaan', deskripsi: 'Wajib tertib & tenang. Dilarang makan/minum, dilarang berbicara dengan suara keras.', link: '#info', icon: '⚠️' },
     { judul: 'Kunjungan Asesor Akreditasi', deskripsi: 'Berita: Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...', link: '/berita/kunjungan-asesor', icon: '📰' },
     { judul: 'Penambahan Koleksi E-Book', deskripsi: 'Berita: Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog...', link: '/berita/koleksi-ebook-baru', icon: '📰' },
-    { judul: 'Struktur Organisasi', deskripsi: 'Susunan Kepengurusan: Kepala Sekolah, Kepala Perpustakaan, Layanan Pembaca, Layanan Teknis TIK.', link: '#struktur', icon: '👥' },
+    { judul: 'Struktur Organisasi', deskripsi: 'Pengurus: Sri Wahyuningsih, S.Pd (Kepala Sekolah), Mina Sari (Kepala Perpustakaan), Meltiana (Layanan Pembaca), Nur Alfi Syahri, S.P. (Layanan Teknis TIK).', link: '#struktur', icon: '👥' },
+    { judul: 'Denah Ruangan', deskripsi: 'Pintu Masuk, Loker, Meja Petugas, Pohon Literasi, Rak Koran, Ruang Komputer, Ruang Lesehan, Rak Buku, Ruang Introvert, Belajar Kelompok.', link: '#denah', icon: '🗺️' },
     { judul: 'Kontak Kami', deskripsi: 'Email: smpn1damai@gmail.com dan Instagram: @smpn1damai', link: '#kontak', icon: '📞' }
   ];
 
@@ -42,16 +41,16 @@ export default function ClientPage() {
   useEffect(() => {
     const fetchDataDrive = async () => {
       try {
-        // ⚠️ JANGAN LUPA PASTE URL GOOGLE SCRIPT LU DI SINI
+        // ⚠️ JANGAN LUPA PASTE URL GOOGLE SCRIPT LU DI BAWAH SINI!
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
         
         setDbBuku(data);
         
-        // NGACAK BUKU BIAR GAK ITU-ITU AJA YANG TAMPIL
+        // Ngacak buku
         const acakData = [...data].sort(() => 0.5 - Math.random());
-        setRandomBuku(acakData.slice(0, 10)); // Ambil 10 aja buat dipajang
+        setRandomBuku(acakData.slice(0, 10)); 
 
       } catch (error) {
         console.error("Gagal memuat database perpustakaan dari Drive.");
@@ -131,7 +130,7 @@ export default function ClientPage() {
             {showWebResults && (
               <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', right: 0, width: '260px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
                 {searchWebQuery === '' ? (
-                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik misi, berita, atau jadwal...</div>
+                  <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik nama, berita, atau info...</div>
                 ) : hasilCariWeb.length > 0 ? (
                   hasilCariWeb.map((item, index) => (
                     <a key={index} href={item.link} onClick={() => setShowWebResults(false)} style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '12px 10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
@@ -157,7 +156,6 @@ export default function ClientPage() {
             </button>
           )}
           <nav>
-            {/* LINK GALERI DIHAPUS DARI MENU */}
             <ul ref={navRef} onScroll={cekPanah} style={{ padding: '0 40px 0 30px', gap: '1rem' }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#profil">Profil</a></li>
