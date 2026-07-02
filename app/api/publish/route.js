@@ -1,85 +1,59 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(req) {
-  const token = process.env.GITHUB_PAT;
-  const repo = 'perpussemangatpagi/perpus-nextjs'; // Pastikan nama repo ini bener
-  
+export async function POST(request) {
   try {
-    const bodyPayload = await req.json();
-    const { username, password, title, body, images, updateSha, updatePath, oldImage, imageToDelete, date } = bodyPayload;
-    
-    const usersList = JSON.parse(process.env.CMS_USERS || '[]');
-    const user = usersList.find(u => u.user === username && u.pass === password);
-    if (!user) return NextResponse.json({ error: 'Akses ditolak' }, { status: 401 });
+    const body = await request.json();
+    const { judul, tanggal, isi } = body;
 
-    let finalImagePath = oldImage || '';
-    let appendedImagesMarkdown = ''; // 🔥 Penampung foto tambahan
+    // 1. Panggil Kunci Rahasia dari Brankas Vercel
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    const GITHUB_REPO = perpussemangatpagi/perpus-nextjs; // Contoh: NurAlfi/perpus-web
 
-    // Logika hapus foto lama (kalau diganti)
-    if (imageToDelete) {
-       try {
-          const fileReq = await fetch(`https://api.github.com/repos/${repo}/contents/${imageToDelete}`, { headers: { Authorization: `Bearer ${token}` } });
-          if (fileReq.ok) {
-             const fileData = await fileReq.json();
-             await fetch(`https://api.github.com/repos/${repo}/contents/${imageToDelete}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: 'Hapus foto lama oleh admin', sha: fileData.sha, branch: 'main' })
-             });
-          }
-          if (finalImagePath === imageToDelete) finalImagePath = '';
-       } catch(e) {}
+    if (!GITHUB_TOKEN || !GITHUB_REPO) {
+      return NextResponse.json({ error: "Kunci Token atau Repo belum dipasang di Vercel bre!" }, { status: 500 });
     }
 
-    // 🔥 LOGIKA UPLOAD MULTI FOTO
-    if (images && images.length > 0) {
-       for(let i = 0; i < images.length; i++) {
-           const img = images[i];
-           const imgName = `content/gambar/${Date.now()}-${img.name.replace(/[^a-zA-Z0-9.]/g, '-')}`;
-           const base64Data = img.base64.split(',')[1];
-           
-           const imgReq = await fetch(`https://api.github.com/repos/${repo}/contents/${imgName}`, {
-              method: 'PUT',
-              headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ message: 'Upload foto dokumentasi', content: base64Data, branch: 'main' })
-           });
-           
-           if (imgReq.ok) {
-               if (i === 0) {
-                   finalImagePath = `/${imgName}`; // Foto 1 jadi Cover
-               } else {
-                   appendedImagesMarkdown += `\n\n![Gambar Tambahan](/${imgName})`; // Foto 2 dst otomatis masuk ke dalam teks
-               }
-           }
-       }
-    }
+    // 2. Bikin nama file dari Judul Berita (Slugify)
+    // Contoh: "Kunjungan Asesor 2026" jadi "kunjungan-asesor-2026.md"
+    const slug = judul.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const fileName = `berita/${slug}.md`; // Disimpan di dalam folder 'berita' di GitHub
 
-    // Logika setting tanggal (bisa mundur ke masa lalu)
-    const dateStr = date || new Date().toISOString().split('T')[0];
-    const safeTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const filePath = updatePath || `content/berita/${dateStr}-${safeTitle}.md`;
-    
-    // Gabungin isi teks sama sisipan foto-foto tambahan
-    const finalBody = body + appendedImagesMarkdown; 
-    const markdownContent = `---\ntitle: "${title}"\nauthor: "${user.nama}"\ndate: "${dateStr}"\nthumbnail: "${finalImagePath}"\n---\n\n${finalBody}`;
-    const encodedContent = Buffer.from(markdownContent, 'utf8').toString('base64');
-    
-    const payload = {
-       message: updateSha ? `Update berita: ${title}` : `Publish berita baru: ${title}`,
-       content: encodedContent,
-       branch: 'main'
-    };
-    if (updateSha) payload.sha = updateSha;
+    // 3. Bikin format isi file .md nya
+    const fileContent = `---
+judul: "${judul}"
+tanggal: "${tanggal}"
+---
 
-    const saveRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-       method: 'PUT',
-       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-       body: JSON.stringify(payload)
+${isi}
+`;
+
+    // 4. GitHub API mewajibkan teks diubah ke format Base64
+    const encodedContent = Buffer.from(fileContent).toString('base64');
+
+    // 5. Nembak (Upload) ke GitHub
+    const githubUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/${fileName}`;
+
+    const githubResponse = await fetch(githubUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `CMS: Publish berita baru -> ${judul}`,
+        content: encodedContent,
+      }),
     });
 
-    if (!saveRes.ok) throw new Error('Gagal menyimpan file Teks ke GitHub');
-    return NextResponse.json({ success: true });
+    if (!githubResponse.ok) {
+      const errData = await githubResponse.json();
+      return NextResponse.json({ error: "Gagal ngirim ke GitHub bre!", detail: errData }, { status: 500 });
+    }
+
+    // Kalau sukses
+    return NextResponse.json({ message: "Sikatt! Berita berhasil dikirim ke GitHub dan sedang di-build Vercel." }, { status: 200 });
+
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Server Vercel nge-blank bre." }, { status: 500 });
   }
 }
