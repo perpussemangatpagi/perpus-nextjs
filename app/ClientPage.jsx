@@ -6,6 +6,12 @@ export default function ClientPage() {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
+  // === STATE UNTUK FITUR REAL-TIME SEARCH ===
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showResults, setShowResults] = useState(false);
+  const [dbBuku, setDbBuku] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
+
   const cekPanah = () => {
     if (!navRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = navRef.current;
@@ -25,43 +31,30 @@ export default function ClientPage() {
     }
   };
 
- const handleSearch = async (e) => {
-    if (e.key === 'Enter') {
-      const kataKunci = e.target.value.toLowerCase();
-      if (!kataKunci) return;
-
-      // Ubah teks tombol jadi loading biar interaktif
-      e.target.value = "Sedang mencari di rak...";
-      e.target.disabled = true;
-
+  // === FUNGSI NARIK DATA DARI GOOGLE DRIVE ===
+  const handleSearchFocus = async () => {
+    setShowResults(true);
+    // Kalau data belum pernah ditarik, kita tarik sekarang!
+    if (dbBuku.length === 0 && !isFetching) {
+      setIsFetching(true);
       try {
-        // PASTE LINK WEB APP URL DARI GOOGLE SCRIPT DI SINI!
-        const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec"; 
+        // ⚠️ PASTE URL GOOGLE SCRIPT LU DI BAWAH SINI!
+        const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         
         const response = await fetch(API_URL);
-        const bukuBuku = await response.json();
-        
-        // Proses mencari buku yang cocok sama ketikan lu
-        const hasilCari = bukuBuku.filter(buku => buku.judul.toLowerCase().includes(kataKunci));
-
-        e.target.value = kataKunci; // Balikin ketikan asli
-        e.target.disabled = false;
-
-        if (hasilCari.length > 0) {
-          // Kalo ketemu, langsung buka tab baru ke PDF pertama yang cocok
-          if (confirm(`Ketemu ${hasilCari.length} buku! Buku pertama: "${hasilCari[0].judul}". Mau langsung buka?`)) {
-            window.open(hasilCari[0].link, '_blank');
-          }
-        } else {
-          alert('Waduh, bukunya belum ada di Google Drive nih bre!');
-        }
+        const data = await response.json();
+        setDbBuku(data);
       } catch (error) {
-        alert('Gagal konek ke Google Drive. Coba lagi!');
-        e.target.value = kataKunci;
-        e.target.disabled = false;
+        console.error("Gagal memuat database perpustakaan.");
       }
+      setIsFetching(false);
     }
   };
+
+  // Logika Filter Real-time sesuai ketikan
+  const hasilCari = dbBuku.filter(buku => 
+    buku.judul.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const ruangBaseStyle = {
     padding: '10px',
@@ -91,12 +84,19 @@ export default function ClientPage() {
             <div className="title" style={{ fontSize: '0.95rem' }}>Perpus SMPN 1 Damai</div>
           </div>
 
+          {/* ========================================= */}
+          {/* KOLOM PENCARIAN REAL-TIME + DROPDOWN    */}
+          {/* ========================================= */}
           <div style={{ position: 'relative', flex: 1, maxWidth: '220px' }}>
             <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
             <input 
               type="text" 
-              placeholder="Cari" 
-              onKeyDown={handleSearch}
+              placeholder="Cari E-Book..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={handleSearchFocus}
+              // Timeout dikasih biar dropdown gak keburu nutup sebelum link diklik
+              onBlur={() => setTimeout(() => setShowResults(false), 200)} 
               style={{ 
                 width: '100%', 
                 padding: '8px 15px 8px 32px', 
@@ -110,11 +110,52 @@ export default function ClientPage() {
                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
                 transition: 'all 0.3s ease'
               }} 
-              onFocus={(e) => { e.target.style.background = 'rgba(255,255,255,0.95)'; e.target.style.borderColor = '#0ea5e9'; }}
-              onBlur={(e) => { e.target.style.background = 'rgba(255,255,255,0.6)'; e.target.style.borderColor = 'rgba(255, 255, 255, 0.8)'; }}
             />
-          </div>
 
+            {/* KOTAK DROPDOWN HASIL PENCARIAN */}
+            {showResults && (
+              <div style={{ 
+                position: 'absolute', top: '110%', right: 0, width: '280px', 
+                background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', 
+                borderRadius: '16px', padding: '10px', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', 
+                maxHeight: '350px', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.8)' 
+              }}>
+                {isFetching ? (
+                  <div style={{ textAlign: 'center', padding: '20px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                    <i className="fa-solid fa-spinner fa-spin" style={{ marginBottom: '8px', fontSize: '1.2rem', color: '#0ea5e9' }}></i>
+                    <br />Mensinkronkan ke Rak Google Drive...
+                  </div>
+                ) : hasilCari.length > 0 ? (
+                  hasilCari.map((buku, index) => (
+                    <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ 
+                      display: 'flex', gap: '12px', alignItems: 'center', padding: '10px', 
+                      textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', 
+                      borderRadius: '10px', transition: 'background 0.2s' 
+                    }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
+                      
+                      {/* LINK RAHASIA GOOGLE DRIVE UNTUK THUMBNAIL */}
+                      <img 
+                        src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w100`} 
+                        alt="cover" 
+                        style={{ width: '45px', height: '60px', objectFit: 'cover', borderRadius: '6px', backgroundColor: '#e2e8f0', border: '1px solid #cbd5e1' }}
+                      />
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: '800', lineHeight: '1.3', marginBottom: '3px' }}>{buku.judul}</span>
+                        <span style={{ fontSize: '0.65rem', color: 'white', background: buku.kategori.includes('Novel') ? '#ec4899' : '#0ea5e9', padding: '3px 8px', borderRadius: '10px', width: 'fit-content', fontWeight: 'bold' }}>
+                          {buku.kategori}
+                        </span>
+                      </div>
+                    </a>
+                  ))
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '20px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                    Yah, bukunya nggak ketemu bre 😢
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="nav-wrapper" style={{ width: '100%', maxWidth: '100%', justifyContent: 'flex-start', padding: 0 }}>
@@ -157,7 +198,6 @@ export default function ClientPage() {
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
-        {/* PROFIL & VISI MISI */}
         <section id="profil" className="section-card glass">
           <h2 className="section-title">Profil & Visi Misi</h2>
           <p style={{ marginBottom: '2rem', textAlign: 'justify' }}>
@@ -170,7 +210,6 @@ export default function ClientPage() {
             </div>
             <div className="box-kaca">
               <h3>🚀 Misi</h3>
-              {/* Padding left ditambahin biar titik bullet gak mepet, trus text justify */}
               <ul className="list-rapi" style={{ paddingLeft: '1.5rem', textAlign: 'justify' }}>
                 <li>Menyediakan bahan bacaan berkualitas.</li>
                 <li>Mengintegrasikan layanan E-Katalog.</li>
@@ -180,7 +219,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* INFO & TATA TERTIB */}
         <section id="info" className="section-card glass">
           <h2 className="section-title">Informasi & Tata Tertib</h2>
           <div className="grid-2">
@@ -211,7 +249,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* BERITA TERBARU */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
           <div className="news-grid">
@@ -237,7 +274,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* STRUKTUR ORGANISASI */}
         <section id="struktur" className="section-card glass" style={{ overflowX: 'hidden' }}>
           <h2 className="section-title">Struktur Organisasi</h2>
           <p style={{ marginBottom: '20px', textAlign: 'justify' }}>Susunan kepengurusan Perpustakaan Semangat Pagi SMPN 1 Damai:</p>
@@ -278,7 +314,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* DENAH RUANGAN */}
         <section id="denah" className="section-card glass">
           <h2 className="section-title">Denah Ruangan</h2>
           <p style={{ marginBottom: '2rem', textAlign: 'justify' }}>Tata letak fasilitas dan area koleksi perpustakaan Semangat Pagi:</p>
@@ -344,7 +379,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* GALERI */}
         <section id="galeri" className="section-card glass">
           <h2 className="section-title">Galeri Kegiatan</h2>
           <p style={{ marginBottom: '15px', textAlign: 'justify' }}>Dokumentasi aktivitas, penataan perpustakaan, digitalisasi katalog, serta kreativitas siswa/siswi SMPN 1 Damai.</p>
@@ -359,7 +393,6 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* KATALOG */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog Digital</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
@@ -379,7 +412,6 @@ export default function ClientPage() {
 
       </div>
 
-      {/* FOOTER */}
       <footer style={{ textAlign: 'center', padding: '20px', marginTop: '1rem', fontSize: '0.9rem', fontWeight: 600, color: '#64748b' }}>
         &copy; 2026 | Admin Web: Nur Alfi Syahri, S.P.
       </footer>
