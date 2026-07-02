@@ -42,7 +42,6 @@ export default function ClientPage() {
   };
 
   useEffect(() => {
-    // 1. Tarik Data Buku dari Google Script
     const fetchDataDrive = async () => {
       try {
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
@@ -57,7 +56,6 @@ export default function ClientPage() {
       setIsFetching(false);
     };
 
-    // 2. Tarik Data Berita dari API Github CMS lu
     const fetchBerita = async () => {
       try {
         const res = await fetch('/api/berita');
@@ -70,7 +68,7 @@ export default function ClientPage() {
     };
 
     fetchDataDrive();
-    fetchBerita(); // Panggil fungsi narik berita
+    fetchBerita();
     
     cekPanah();
     window.addEventListener('resize', cekPanah);
@@ -97,18 +95,21 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* NAVBAR */}
-      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '2px', padding: '10px 15px 2px 15px', borderRadius: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
-          <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px' }}>
+      {/* NAVBAR VERSI DESKTOP: SINGLE LINE & PILL SHAPE */}
+      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexWrap: 'wrap', alignItems: 'center', padding: '10px 15px', borderRadius: '50px', gap: '15px' }}>
+        
+        {/* KIRI: Logo + Search */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flex: '1 1 auto', minWidth: '320px' }}>
+          <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px', flexShrink: 0 }}>
             <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpus" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }} />
-            <div className="title" style={{ fontSize: '0.95rem' }}>Perpus SMPN 1 Damai</div>
+            <div className="title" style={{ fontSize: '0.95rem', whiteSpace: 'nowrap' }}>Perpus SMPN 1 Damai</div>
           </div>
-          <div style={{ position: 'relative', flex: 1, maxWidth: '220px' }}>
+          
+          <div style={{ position: 'relative', flex: '1 1 auto', maxWidth: '280px' }}>
             <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
-            <input type="text" placeholder="Cari info web..." value={searchWebQuery} onChange={(e) => setSearchWebQuery(e.target.value)} onFocus={() => setShowWebResults(true)} onBlur={() => setTimeout(() => setShowWebResults(false), 200)} style={{ width: '100%', padding: '7px 15px 7px 32px', borderRadius: '24px', border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease' }} />
+            <input type="text" placeholder="Cari info web..." value={searchWebQuery} onChange={(e) => setSearchWebQuery(e.target.value)} onFocus={() => setShowWebResults(true)} onBlur={() => setTimeout(() => setShowWebResults(false), 200)} style={{ width: '100%', padding: '8px 15px 8px 32px', borderRadius: '50px', border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease' }} />
             {showWebResults && (
-              <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', right: 0, width: '260px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
+              <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '120%', left: 0, width: '280px', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 9999 }}>
                 {searchWebQuery === '' ? (
                   <div style={{ textAlign: 'center', padding: '15px', color: '#64748b', fontSize: '0.8rem', fontStyle: 'italic' }}>Ketik nama, berita, atau info...</div>
                 ) : hasilCariWeb.length > 0 ? (
@@ -128,20 +129,22 @@ export default function ClientPage() {
             )}
           </div>
         </div>
-        <div className="nav-wrapper" style={{ width: '100%', maxWidth: '100%', justifyContent: 'flex-start', padding: 0 }}>
+
+        {/* KANAN: Menu Navigasi (Otomatis geser kanan di Desktop) */}
+        <div className="nav-wrapper" style={{ flex: '2 1 auto', maxWidth: '100%', padding: 0, display: 'flex', justifyContent: 'flex-end', background: 'transparent', border: 'none' }}>
           {showLeftArrow && (
             <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px' }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
           )}
-          <nav>
-            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 0', gap: '1.2rem', margin: 0 }}>
-              <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
-              <li><a href="#katalog">Katalog</a></li>
-              <li><a href="#berita">Berita</a></li>
-              <li><a href="#profil">Profil</a></li>
-              <li><a href="#info">Tata Tertib</a></li>
-              <li><a href="#struktur">Struktur</a></li>
-              <li><a href="#denah">Denah</a></li>
-              <li><a href="#kontak">Kontak</a></li>
+          <nav style={{ flex: '0 1 auto', overflow: 'hidden' }}>
+            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '0 10px', gap: '1.2rem', margin: 0, alignItems: 'center' }}>
+              <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9', whiteSpace: 'nowrap' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
+              <li><a href="#katalog" style={{ whiteSpace: 'nowrap' }}>Katalog</a></li>
+              <li><a href="#berita" style={{ whiteSpace: 'nowrap' }}>Berita</a></li>
+              <li><a href="#profil" style={{ whiteSpace: 'nowrap' }}>Profil</a></li>
+              <li><a href="#info" style={{ whiteSpace: 'nowrap' }}>Tata Tertib</a></li>
+              <li><a href="#struktur" style={{ whiteSpace: 'nowrap' }}>Struktur</a></li>
+              <li><a href="#denah" style={{ whiteSpace: 'nowrap' }}>Denah</a></li>
+              <li><a href="#kontak" style={{ whiteSpace: 'nowrap' }}>Kontak</a></li>
             </ul>
           </nav>
           {showRightArrow && (
@@ -173,7 +176,7 @@ export default function ClientPage() {
 
           <div style={{ position: 'relative', width: '100%', maxWidth: '400px', margin: '0 auto 25px' }}>
             <i className="fa-solid fa-book-open" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9' }}></i>
-            <input type="text" placeholder="Cari E-Book di sini..." value={searchKatalogQuery} onChange={(e) => setSearchKatalogQuery(e.target.value)} onFocus={() => setShowKatalogResults(true)} onBlur={() => setTimeout(() => setShowKatalogResults(false), 200)} style={{ width: '100%', padding: '12px 20px 12px 45px', borderRadius: '24px', border: '2px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.7)', outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.95rem', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} />
+            <input type="text" placeholder="Cari E-Book di sini..." value={searchKatalogQuery} onChange={(e) => setSearchKatalogQuery(e.target.value)} onFocus={() => setShowKatalogResults(true)} onBlur={() => setTimeout(() => setShowKatalogResults(false), 200)} style={{ width: '100%', padding: '12px 20px 12px 45px', borderRadius: '50px', border: '2px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.7)', outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.95rem', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }} />
             {showKatalogResults && (
               <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', left: 0, width: '100%', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 999 }}>
                 {isFetching ? (
@@ -218,7 +221,7 @@ export default function ClientPage() {
         </section>
 
         {/* ======================================================= */}
-        {/* SECTION 2: BERITA TERBARU (OTOMATIS DARI CMS GITHUB)    */}
+        {/* SECTION 2: BERITA TERBARU                               */}
         {/* ======================================================= */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
@@ -242,8 +245,6 @@ export default function ClientPage() {
                     <div className="news-date">{berita.tanggal}</div>
                     <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{berita.judul}</h3>
                     <p className="news-snippet" style={{ textAlign: 'justify', fontSize: '0.85rem' }}>{berita.snippet}</p>
-                    
-                    {/* Link ke halaman detail berita, siap-siap buat file page-nya nanti bre! */}
                     <a href={`/berita/${berita.id}`} className="btn-baca">Baca Selengkapnya</a>
                   </div>
                 </div>
