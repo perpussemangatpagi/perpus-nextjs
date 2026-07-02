@@ -42,7 +42,6 @@ export default function ClientPage() {
   useEffect(() => {
     const fetchDataDrive = async () => {
       try {
-        // 🔥 URL GAS ASLI LU UDAH DIPASANG DI SINI 🔥
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
@@ -100,7 +99,7 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* NAVBAR DI-DIET-IN: Gap dan Padding bawah dikurangin ekstrim biar rapi dan rapat */}
+      {/* NAVBAR */}
       <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '2px', padding: '10px 15px 2px 15px', borderRadius: '24px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
@@ -157,12 +156,13 @@ export default function ClientPage() {
             </button>
           )}
           <nav>
-            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 40px 4px 30px', gap: '1rem', margin: 0 }}>
+            {/* PADDING KIRI DIKURANGIN JADI 10PX BIAR WEB UTAMA LEBIH MEPET KIRI */}
+            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 40px 4px 10px', gap: '1rem', margin: 0 }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog">Katalog</a></li>
+              <li><a href="#berita">Berita</a></li>
               <li><a href="#profil">Profil</a></li>
               <li><a href="#info">Tata Tertib</a></li>
-              <li><a href="#berita">Berita</a></li>
               <li><a href="#struktur">Struktur</a></li>
               <li><a href="#denah">Denah</a></li>
               <li><a href="#kontak">Kontak</a></li>
@@ -190,7 +190,9 @@ export default function ClientPage() {
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
+        {/* ======================================================= */}
         {/* SECTION 1: E-KATALOG */}
+        {/* ======================================================= */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>
@@ -269,7 +271,35 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* SECTION 2: PROFIL & VISI MISI */}
+        {/* ======================================================= */}
+        {/* SECTION 2: BERITA TERBARU (DIPINDAH KE BAWAH E-KATALOG) */}
+        {/* ======================================================= */}
+        <section id="berita" className="section-card glass">
+          <h2 className="section-title">Berita & Info Terbaru</h2>
+          <div className="news-grid">
+            <div className="news-card">
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+              <div className="news-content">
+                <div className="news-date">02 Juli 2026</div>
+                <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left' }}>Kunjungan Asesor Akreditasi ke Perpustakaan</h3>
+                <p className="news-snippet" style={{ textAlign: 'justify' }}>Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...</p>
+                <a href="/berita/kunjungan-asesor" className="btn-baca">Baca Selengkapnya</a>
+              </div>
+            </div>
+
+            <div className="news-card">
+              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+              <div className="news-content">
+                <div className="news-date">28 Juni 2026</div>
+                <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left' }}>Penambahan Koleksi E-Book Baru</h3>
+                <p className="news-snippet" style={{ textAlign: 'justify' }}>Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog Google Drive perpustakaan...</p>
+                <a href="/berita/koleksi-ebook-baru" className="btn-baca">Baca Selengkapnya</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: PROFIL & VISI MISI */}
         <section id="profil" className="section-card glass">
           <h2 className="section-title">Profil & Visi Misi</h2>
           <p style={{ marginBottom: '2rem', textAlign: 'justify' }}>
@@ -291,7 +321,7 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* SECTION 3: INFO & TATA TERTIB */}
+        {/* SECTION 4: INFO & TATA TERTIB */}
         <section id="info" className="section-card glass">
           <h2 className="section-title">Informasi & Tata Tertib</h2>
           <div className="grid-2">
@@ -318,32 +348,6 @@ export default function ClientPage() {
                 <li>Dilarang makan/minum di area perpustakaan.</li>
                 <li>Dilarang berbicara dengan suara keras.</li>
               </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 4: BERITA TERBARU */}
-        <section id="berita" className="section-card glass">
-          <h2 className="section-title">Berita & Info Terbaru</h2>
-          <div className="news-grid">
-            <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-              <div className="news-content">
-                <div className="news-date">02 Juli 2026</div>
-                <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left' }}>Kunjungan Asesor Akreditasi ke Perpustakaan</h3>
-                <p className="news-snippet" style={{ textAlign: 'justify' }}>Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...</p>
-                <a href="/berita/kunjungan-asesor" className="btn-baca">Baca Selengkapnya</a>
-              </div>
-            </div>
-
-            <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-              <div className="news-content">
-                <div className="news-date">28 Juni 2026</div>
-                <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left' }}>Penambahan Koleksi E-Book Baru</h3>
-                <p className="news-snippet" style={{ textAlign: 'justify' }}>Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog Google Drive perpustakaan...</p>
-                <a href="/berita/koleksi-ebook-baru" className="btn-baca">Baca Selengkapnya</a>
-              </div>
             </div>
           </div>
         </section>
