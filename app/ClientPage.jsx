@@ -42,6 +42,7 @@ export default function ClientPage() {
   useEffect(() => {
     const fetchDataDrive = async () => {
       try {
+        // 🔥 URL GAS ASLI LU UDAH DIPASANG DI SINI 🔥
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
@@ -156,8 +157,8 @@ export default function ClientPage() {
             </button>
           )}
           <nav>
-            {/* PADDING KIRI DIKURANGIN JADI 10PX BIAR WEB UTAMA LEBIH MEPET KIRI */}
-            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 40px 4px 10px', gap: '1rem', margin: 0 }}>
+            {/* PADDING KIRI & KANAN DIHAPUS JADI 0 BIAR LURUS PRESISI SAMA LOGO DAN KOLOM CARI */}
+            <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 0', gap: '1.2rem', margin: 0 }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog">Katalog</a></li>
               <li><a href="#berita">Berita</a></li>
@@ -272,7 +273,7 @@ export default function ClientPage() {
         </section>
 
         {/* ======================================================= */}
-        {/* SECTION 2: BERITA TERBARU (DIPINDAH KE BAWAH E-KATALOG) */}
+        {/* SECTION 2: BERITA TERBARU */}
         {/* ======================================================= */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
