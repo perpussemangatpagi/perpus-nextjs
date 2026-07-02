@@ -25,8 +25,6 @@ export default function ClientPage() {
     { judul: 'Profil & Visi Misi', deskripsi: 'Semangat Pagi (Prestasi Anak Negeri). Menjadikan perpustakaan sebagai jantung pendidikan yang mencetak generasi literat, unggul, dan berwawasan global.', link: '#profil', icon: '🎯' },
     { judul: 'Jam Operasional & Aturan', deskripsi: 'Buka setiap hari sekolah 07.30 - 14.00 WITA. Maksimal pinjam 2 buku selama 7 hari.', link: '#info', icon: '⏰' },
     { judul: 'Etika Perpustakaan', deskripsi: 'Wajib tertib & tenang. Dilarang makan/minum, dilarang berbicara dengan suara keras.', link: '#info', icon: '⚠️' },
-    { judul: 'Kunjungan Asesor Akreditasi', deskripsi: 'Berita: Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...', link: '/berita/kunjungan-asesor', icon: '📰' },
-    { judul: 'Penambahan Koleksi E-Book', deskripsi: 'Berita: Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog...', link: '/berita/koleksi-ebook-baru', icon: '📰' },
     { judul: 'Struktur Organisasi', deskripsi: 'Pengurus: Sri Wahyuningsih, S.Pd (Kepala Sekolah), Mina Sari (Kepala Perpustakaan), Meltiana (Layanan Pembaca), Nur Alfi Syahri, S.P. (Layanan Teknis TIK).', link: '#struktur', icon: '👥' },
     { judul: 'Denah Ruangan', deskripsi: 'Pintu Masuk, Loker, Meja Petugas, Pohon Literasi, Rak Koran, Ruang Komputer, Ruang Lesehan, Rak Buku, Ruang Introvert, Belajar Kelompok.', link: '#denah', icon: '🗺️' },
     { judul: 'Kontak Kami', deskripsi: 'Email: smpn1damai@gmail.com dan Instagram: @smpn1damai', link: '#kontak', icon: '📞' }
@@ -42,7 +40,6 @@ export default function ClientPage() {
   useEffect(() => {
     const fetchDataDrive = async () => {
       try {
-        // 🔥 URL GAS ASLI LU UDAH DIPASANG DI SINI 🔥
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
@@ -157,7 +154,6 @@ export default function ClientPage() {
             </button>
           )}
           <nav>
-            {/* PADDING KIRI & KANAN DIHAPUS JADI 0 BIAR LURUS PRESISI SAMA LOGO DAN KOLOM CARI */}
             <ul ref={navRef} onScroll={cekPanah} style={{ padding: '4px 0', gap: '1.2rem', margin: 0 }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog">Katalog</a></li>
@@ -191,16 +187,13 @@ export default function ClientPage() {
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
-        {/* ======================================================= */}
         {/* SECTION 1: E-KATALOG */}
-        {/* ======================================================= */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>
             Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.
           </p>
 
-          {/* SEARCH BAR KHUSUS E-BOOK */}
           <div style={{ position: 'relative', width: '100%', maxWidth: '400px', margin: '0 auto 25px' }}>
             <i className="fa-solid fa-book-open" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9' }}></i>
             <input 
@@ -218,7 +211,6 @@ export default function ClientPage() {
               }} 
             />
 
-            {/* DROPDOWN HASIL E-BOOK */}
             {showKatalogResults && (
               <div onMouseDown={(e) => e.preventDefault()} style={{ position: 'absolute', top: '110%', left: 0, width: '100%', background: '#ffffff', borderRadius: '16px', padding: '10px', boxShadow: '0 10px 40px rgba(0,0,0,0.25)', maxHeight: '350px', overflowY: 'auto', border: '2px solid #e2e8f0', zIndex: 999 }}>
                 {isFetching ? (
@@ -245,7 +237,6 @@ export default function ClientPage() {
             )}
           </div>
 
-          {/* PAJANGAN THUMBNAIL (AUTO SHUFFLE) */}
           <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', padding: '10px 5px 20px', width: '100%', WebkitOverflowScrolling: 'touch' }}>
             {isFetching ? (
               <div style={{ margin: '0 auto', textAlign: 'center', color: '#64748b', fontWeight: 'bold', fontSize: '0.9rem' }}>
@@ -273,31 +264,16 @@ export default function ClientPage() {
         </section>
 
         {/* ======================================================= */}
-        {/* SECTION 2: BERITA TERBARU */}
+        {/* SECTION 2: BERITA TERBARU (DIKOSONGIN SEMENTARA)        */}
         {/* ======================================================= */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
-          <div className="news-grid">
-            <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.32.43 AM.jpeg" alt="Berita 1" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-              <div className="news-content">
-                <div className="news-date">02 Juli 2026</div>
-                <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left' }}>Kunjungan Asesor Akreditasi ke Perpustakaan</h3>
-                <p className="news-snippet" style={{ textAlign: 'justify' }}>Hari ini perpustakaan Semangat Pagi kedatangan tim asesor untuk menilai kelengkapan literasi...</p>
-                <a href="/berita/kunjungan-asesor" className="btn-baca">Baca Selengkapnya</a>
-              </div>
-            </div>
-
-            <div className="news-card">
-              <img src="/gambar/WhatsApp Image 2026-05-30 at 10.34.53 AM.jpeg" alt="Berita 2" className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
-              <div className="news-content">
-                <div className="news-date">28 Juni 2026</div>
-                <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left' }}>Penambahan Koleksi E-Book Baru</h3>
-                <p className="news-snippet" style={{ textAlign: 'justify' }}>Kini siswa dapat mengakses ratusan e-book baru langsung dari sistem katalog Google Drive perpustakaan...</p>
-                <a href="/berita/koleksi-ebook-baru" className="btn-baca">Baca Selengkapnya</a>
-              </div>
-            </div>
+          
+          <div style={{ background: 'rgba(255,255,255,0.4)', padding: '30px 20px', borderRadius: '16px', textAlign: 'center', border: '2px dashed rgba(255,255,255,0.8)' }}>
+            <i className="fa-solid fa-newspaper" style={{ fontSize: '2.5rem', color: '#94a3b8', marginBottom: '10px' }}></i>
+            <p style={{ color: '#64748b', fontWeight: '600', fontSize: '0.95rem' }}>Belum ada berita terbaru saat ini.</p>
           </div>
+          
         </section>
 
         {/* SECTION 3: PROFIL & VISI MISI */}
