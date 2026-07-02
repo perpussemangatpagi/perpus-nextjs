@@ -1,190 +1,254 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AdminPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [inputUser, setInputUser] = useState('');
+  const [inputPass, setInputPass] = useState('');
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+
+  const [view, setView] = useState('list');
   const [beritaList, setBeritaList] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [pesan, setPesan] = useState({ tipe: '', teks: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState('');
 
-  const [formOpen, setFormOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [oldFilename, setOldFilename] = useState('');
-  const [title, setTitle] = useState('');
-  const [thumb, setThumb] = useState(''); // Textarea untuk banyak link
-  const [body, setBody] = useState('');
+  const [judul, setJudul] = useState('');
+  const [tanggal, setTanggal] = useState('');
+  const [isi, setIsi] = useState('');
+  const [fileImages, setFileImages] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [editSha, setEditSha] = useState('');
+  const [editFilename, setEditFilename] = useState('');
 
-  const fetchBerita = async () => {
-    try {
-      const res = await fetch('https://api.github.com/repos/perpussemangatpagi/smpn1damai-nextjs/contents/content/berita');
-      if (res.ok) {
-        const files = await res.json();
-        const dataBerita = await Promise.all(
-          files.filter(f => f.name.endsWith('.json')).map(async (f) => {
-            const detail = await fetch(f.download_url);
-            return detail.json();
-          })
-        );
-        setBeritaList(dataBerita);
-      }
-    } catch (e) { console.error("Gagal load"); }
-  };
+  useEffect(() => {
+    const savedUser = localStorage.getItem('perpus_user');
+    if (savedUser) setLoggedInUser(JSON.parse(savedUser));
+    setIsAuthChecking(false);
+  }, []);
 
-  useEffect(() => { fetchBerita(); }, []);
+  useEffect(() => {
+    if (loggedInUser && view === 'list') loadBerita();
+  }, [loggedInUser, view]);
 
-  const showPesan = (tipe, teks) => {
-    setPesan({ tipe, teks });
-    setTimeout(() => setPesan({ tipe: '', teks: '' }), 4000);
-  };
-
-  const handleLogin = (e) => {
+  // LOGIN AMAN VIA API
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (username && password) {
-      setIsLoggedIn(true);
-      showPesan('sukses', 'Login Berhasil! Selamat bekerja Mandor.');
-    } else {
-      showPesan('error', 'Masukkan Username & Password!');
-    }
-  };
-
-  const handleBatal = () => {
-    setFormOpen(false); setIsEdit(false); setOldFilename(''); setTitle(''); setThumb(''); setBody('');
-    showPesan('sukses', 'Aksi dibatalkan.');
-  };
-
-  const handleBukaTambah = () => {
-    setIsEdit(false); setTitle(''); setThumb(''); setBody(''); setFormOpen(true);
-  };
-
-  const handleBukaEdit = (b) => {
-    setIsEdit(true); setOldFilename(b.filename); setTitle(b.title);
-    setThumb(b.images ? b.images.join(', ') : b.thumb); 
-    setBody(b.body); setFormOpen(true);
-  };
-
-  const handleSimpanBerita = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const imageArray = thumb ? thumb.split(',').map(url => url.trim()).filter(url => url !== '') : [];
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-    const filename = isEdit ? oldFilename : `${new Date().toISOString().split('T')[0]}-${slug}`;
+    setIsLoginLoading(true);
 
     try {
-      const res = await fetch('/api/admin/berita', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, filename, title, thumbStr: thumb, images: imageArray, body, isEdit })
+        body: JSON.stringify({ username: inputUser, password: inputPass })
       });
-      const hasil = await res.json();
-      if (res.ok) { showPesan('sukses', hasil.message); setFormOpen(false); fetchBerita(); } 
-      else { showPesan('error', hasil.error); }
-    } catch (err) { showPesan('error', 'Koneksi error!'); } finally { setLoading(false); }
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem('perpus_user', JSON.stringify(data.user));
+        setLoggedInUser(data.user);
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      alert("Gagal nyambung ke server Login bre.");
+    }
+    setIsLoginLoading(false);
   };
 
-  const handleHapusBerita = async (filename, judul) => {
-    if (!confirm(`Hapus "${judul}"?`)) return;
-    setLoading(true);
-    try {
-        const res = await fetch('/api/admin/berita', {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password, filename: `${filename}.json` })
-        });
-        const hasil = await res.json();
-        if (res.ok) { showPesan('sukses', 'Berhasil dihapus'); fetchBerita(); }
-        else { showPesan('error', hasil.error); }
-    } catch (err) { showPesan('error', 'Gagal'); } finally { setLoading(false); }
+  const handleLogout = () => {
+    localStorage.removeItem('perpus_user');
+    setLoggedInUser(null);
+    setInputUser('');
+    setInputPass('');
+    setView('list');
   };
+
+  const loadBerita = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/publish', { method: 'POST', body: JSON.stringify({ action: 'list' }) });
+      const data = await res.json();
+      setBeritaList(data.data || []);
+    } catch (e) {
+      alert("Gagal memuat daftar berita.");
+    }
+    setIsLoading(false);
+  };
+
+  const handleDelete = async (item) => {
+    if (!confirm(`Yakin mau hanguskan berita: ${item.name.replace('.md', '')}?`)) return;
+    setIsLoading(true);
+    try {
+      await fetch('/api/publish', { method: 'POST', body: JSON.stringify({ action: 'delete', filename: item.name, sha: item.sha }) });
+      loadBerita();
+    } catch (e) {
+      alert("Gagal menghapus berita.");
+    }
+    setIsLoading(false);
+  };
+
+  const handleEdit = async (item) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/publish', { method: 'POST', body: JSON.stringify({ action: 'get', filename: item.name }) });
+      const data = await res.json();
+      setEditSha(data.sha);
+      setEditFilename(item.name);
+
+      const match = data.content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+      if (match) {
+        const fm = match[1];
+        setIsi(match[2].trim());
+        let jdl = '', tgl = '', imgs = [];
+        fm.split('\n').forEach(line => {
+          if (line.startsWith('judul:')) jdl = line.replace('judul:', '').replace(/"/g, '').trim();
+          if (line.startsWith('tanggal:')) tgl = line.replace('tanggal:', '').replace(/"/g, '').trim();
+          if (line.startsWith('images:')) { try { imgs = JSON.parse(line.replace('images:', '').trim()); } catch(e){} }
+        });
+        setJudul(jdl); setTanggal(tgl); setExistingImages(imgs);
+      } else {
+        setIsi(data.content);
+      }
+      setView('form');
+    } catch (e) {
+      alert("Gagal ngebaca isi file berita.");
+    }
+    setIsLoading(false);
+  };
+
+  const toBase64 = (file) => new Promise((res, rej) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => res(reader.result.split(',')[1]);
+    reader.onerror = rej;
+  });
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      let uploadedUrls = [];
+      if (fileImages.length > 0) {
+         setLoadingText(`Unggah ${fileImages.length} foto...`);
+         for (let i = 0; i < fileImages.length; i++) {
+            const b64 = await toBase64(fileImages[i]);
+            const res = await fetch('/api/publish', {
+               method: 'POST', body: JSON.stringify({ action: 'upload_image', filename: fileImages[i].name, base64: b64 })
+            });
+            const d = await res.json();
+            if(d.url) uploadedUrls.push(d.url);
+         }
+      }
+      const finalImages = [...existingImages, ...uploadedUrls];
+      const thumbnail = finalImages.length > 0 ? finalImages[0] : '';
+      let filenameToSave = editFilename || `${judul.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')}.md`;
+
+      setLoadingText("Menyimpan naskah...");
+      const res = await fetch('/api/publish', {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'save',
+          judul, tanggal, isi, thumbnail, 
+          images: finalImages, filename: filenameToSave, sha: editSha,
+          penulis: `${loggedInUser.name} | ${loggedInUser.role}`
+        })
+      });
+      if (res.ok) {
+        alert("🔥 SIKAT! Berita sukses mendarat di GitHub!");
+        resetForm();
+      } else {
+        alert("Yah gagal nyimpan bre.");
+      }
+    } catch (e) { alert("Error koneksi API bre."); }
+    setLoadingText(''); setIsLoading(false);
+  };
+
+  const resetForm = () => {
+    setJudul(''); setTanggal(''); setIsi('');
+    setFileImages([]); setExistingImages([]);
+    setEditSha(''); setEditFilename('');
+    setView('list');
+  };
+
+  if (isAuthChecking) return <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Cek gembok dulu...</div>;
+
+  if (!loggedInUser) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #e0f2fe, #f3e8ff)' }}>
+        <form onSubmit={handleLogin} style={{ background: 'white', padding: '40px', borderRadius: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)', width: '90%', maxWidth: '400px', textAlign: 'center' }}>
+          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo" style={{ width: '80px', marginBottom: '20px' }} />
+          <h2 style={{ marginBottom: '5px', color: '#0f172a' }}>Login Admin CMS</h2>
+          <p style={{ color: '#64748b', marginBottom: '30px', fontSize: '0.9rem' }}>Akses Khusus Kepala Perpustakaan</p>
+          <input type="text" placeholder="Username" value={inputUser} onChange={(e) => setInputUser(e.target.value)} required style={{ width: '100%', padding: '12px', marginBottom: '15px', borderRadius: '12px', border: '2px solid #e2e8f0', outline: 'none' }} />
+          <input type="password" placeholder="Password" value={inputPass} onChange={(e) => setInputPass(e.target.value)} required style={{ width: '100%', padding: '12px', marginBottom: '25px', borderRadius: '12px', border: '2px solid #e2e8f0', outline: 'none' }} />
+          <button type="submit" disabled={isLoginLoading} style={{ width: '100%', padding: '12px', background: isLoginLoading ? '#94a3b8' : '#0ea5e9', color: 'white', fontWeight: 'bold', border: 'none', borderRadius: '50px', cursor: isLoginLoading ? 'not-allowed' : 'pointer', fontSize: '1rem' }}>
+            {isLoginLoading ? 'Membuka Brankas...' : 'Masuk Ruang Admin'}
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif', background: 'linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 100%)', minHeight: '100vh', color: '#1e293b' }}>
-      {pesan.teks && (
-        <div style={{ position: 'fixed', top: '20px', right: '20px', left: '20px', padding: '15px', borderRadius: '15px', color: 'white', fontWeight: 'bold', textAlign: 'center', zIndex: 10000, background: pesan.tipe === 'sukses' ? '#10b981' : '#ef4444', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
-          {pesan.teks}
-        </div>
-      )}
-
-      {!isLoggedIn ? (
-        <div style={{ maxWidth: '400px', margin: '10vh auto', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)', padding: '30px', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.05)', textAlign: 'center', border: '1px solid rgba(255,255,255,0.5)' }}>
-          <img src="/logo_sekolah (1).png" alt="Logo" style={{ height: '70px', marginBottom: '15px' }} />
-          <h2 style={{ margin: '0 0 10px 0' }}>CMS SMPN 1 Damai</h2>
-          <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '20px' }}>Silakan masuk menggunakan kredensial Vercel.</p>
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <input type="text" placeholder="Username Admin" value={username} onChange={(e) => setUsername(e.target.value)} style={{ padding: '12px 16px', borderRadius: '14px', border: '1px solid #cbd5e1', fontSize: '1rem', outline: 'none' }} required />
-            <input type="password" placeholder="Password Admin" value={password} onChange={(e) => setPassword(e.target.value)} style={{ padding: '12px 16px', borderRadius: '14px', border: '1px solid #cbd5e1', fontSize: '1rem', outline: 'none' }} required />
-            <button type="submit" style={{ padding: '14px', borderRadius: '14px', background: '#0ea5e9', color: 'white', border: 'none', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', marginTop: '10px' }}>Masuk Dashboard 🚀</button>
-          </form>
-        </div>
-      ) : (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', background: 'rgba(255,255,255,0.5)', padding: '15px 20px', borderRadius: '20px', backdropFilter: 'blur(5px)' }}>
-            <div>
-              <h1 style={{ margin: 0, fontSize: '1.4rem' }}>Ruang Kerja Berita</h1>
-              <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Mode Admin Aktif</span>
-            </div>
-            {!formOpen && (
-              <button onClick={handleBukaTambah} style={{ background: '#0ea5e9', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '14px', fontWeight: 'bold', cursor: 'pointer' }}>+ Tulis Berita</button>
-            )}
+    <div style={{ minHeight: '100vh', padding: '30px 15px', background: 'linear-gradient(135deg, #e0f2fe, #f3e8ff)' }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', padding: '25px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', borderBottom: '2px solid #e2e8f0', paddingBottom: '15px' }}>
+          <div>
+            <h2 style={{ color: '#0f172a', margin: 0 }}>Dashboard CMS</h2>
+            <p style={{ color: '#0ea5e9', fontSize: '0.85rem', margin: '5px 0 0 0', fontWeight: 'bold' }}>👤 {loggedInUser.name} ({loggedInUser.role})</p>
           </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {view === 'list' && <button onClick={() => setView('form')} style={{ background: '#0ea5e9', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer' }}>+ Tulis Baru</button>}
+            <button onClick={handleLogout} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer' }}><i className="fa-solid fa-right-from-bracket"></i></button>
+          </div>
+        </div>
 
-          {formOpen && (
-            <div style={{ background: 'white', padding: '25px', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.05)', marginBottom: '30px' }}>
-              <h2 style={{ marginTop: 0, marginBottom: '20px', color: '#0ea5e9' }}>{isEdit ? '📝 Edit Berita Sekolah' : '📣 Tulis Berita Baru'}</h2>
-              <form onSubmit={handleSimpanBerita} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                  <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Judul Berita</label>
-                  <input type="text" placeholder="Contoh: Siswa SMPN 1 Damai Juara Coding..." value={title} onChange={(e) => setTitle(e.target.value)} style={{ padding: '12px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem' }} required />
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                  <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Daftar URL Foto (Pisahkan dengan koma ,)</label>
-                  <textarea placeholder="Contoh: https://foto1.jpg, https://foto2.jpg" value={thumb} onChange={(e) => setThumb(e.target.value)} style={{ padding: '12px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem', height: '80px', resize: 'vertical' }}></textarea>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                  <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Isi Konten Berita</label>
-                  <textarea placeholder="Tuliskan berita lengkap di sini..." rows="8" value={body} onChange={(e) => setBody(e.target.value)} style={{ padding: '12px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem', resize: 'vertical' }} required></textarea>
-                </div>
-
-                <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
-                  <button type="submit" disabled={loading} style={{ flex: 1, padding: '14px', borderRadius: '14px', background: '#10b981', color: 'white', border: 'none', fontWeight: 'bold', fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer' }}>
-                    {loading ? 'Sedang Memproses...' : 'Simpan ke Web Resmi 🚀'}
-                  </button>
-                  <button type="button" onClick={handleBatal} style={{ padding: '14px 25px', borderRadius: '14px', background: '#ef4444', color: 'white', border: 'none', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer' }}>
-                    Batal
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {!formOpen && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <h3 style={{ margin: '10px 0 5px 0' }}>Berita yang sudah Mengudara ({beritaList.length})</h3>
-              {beritaList.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.3)', borderRadius: '20px' }}>Sedang mengambil gudang berita...</div>
-              ) : (
-                beritaList.map((b) => (
-                  <div key={b.filename} style={{ background: 'white', padding: '15px', borderRadius: '20px', display: 'flex', gap: '15px', alignItems: 'center', boxShadow: '0 5px 15px rgba(0,0,0,0.02)' }}>
-                    <img src={b.thumb} alt="Thumb" style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: '12px', background: '#f1f5f9' }} />
-                    <div style={{ flex: 1 }}>
-                      <span style={{ fontSize: '0.75rem', color: '#0ea5e9', fontWeight: 'bold' }}>{b.tanggalCantik} | Oleh: {b.author}</span>
-                      <h4 style={{ margin: '4px 0', fontSize: '1rem' }}>{b.title}</h4>
-                      <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{b.snippetBersih}</p>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <button onClick={() => handleBukaEdit(b)} style={{ background: '#f1f5f9', border: 'none', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', color: '#475569', fontSize: '0.8rem' }}>Edit</button>
-                      <button onClick={() => handleHapusBerita(b.filename, b.title)} style={{ background: '#fee2e2', border: 'none', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', color: '#ef4444', fontSize: '0.8rem' }}>Hapus</button>
+        {view === 'list' && (
+          <div>
+            {isLoading ? <p style={{ textAlign: 'center', fontWeight: 'bold', color: '#64748b' }}>Memuat data dari GitHub...</p> : beritaList.length === 0 ? <p style={{ textAlign: 'center', color: '#64748b' }}>Belum ada berita. Yuk buat baru!</p> : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {beritaList.map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', padding: '15px', borderRadius: '16px', border: '1px solid #cbd5e1' }}>
+                    <span style={{ fontWeight: 'bold', color: '#1e293b' }}>{item.name.replace('.md', '').replace(/-/g, ' ')}</span>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => handleEdit(item)} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Edit</button>
+                      <button onClick={() => handleDelete(item)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Hapus</button>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {view === 'form' && (
+          <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div>
+              <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>Judul Berita</label>
+              <input type="text" required value={judul} onChange={(e) => setJudul(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #cbd5e1', outline: 'none' }} />
             </div>
-          )}
-        </div>
-      )}
+            <div>
+              <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>Tanggal</label>
+              <input type="date" required value={tanggal} onChange={(e) => setTanggal(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #cbd5e1', outline: 'none' }} />
+            </div>
+            <div>
+              <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>Upload Foto</label>
+              <input type="file" multiple accept="image/*" onChange={(e) => setFileImages(Array.from(e.target.files))} style={{ width: '100%', padding: '10px', background: '#f1f5f9', borderRadius: '12px', border: '2px dashed #94a3b8' }} />
+              {existingImages.length > 0 && <p style={{ fontSize: '0.8rem', color: '#ec4899', marginTop: '5px' }}>*File ini udah ada {existingImages.length} foto lama.</p>}
+            </div>
+            <div>
+              <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>Isi Berita</label>
+              <textarea required rows="10" value={isi} onChange={(e) => setIsi(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #cbd5e1', outline: 'none' }}></textarea>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button type="button" onClick={resetForm} disabled={isLoading} style={{ flex: 1, padding: '15px', background: '#e2e8f0', border: 'none', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold' }}>Batal</button>
+              <button type="submit" disabled={isLoading} style={{ flex: 2, padding: '15px', background: isLoading ? '#94a3b8' : '#10b981', color: 'white', border: 'none', borderRadius: '50px', cursor: 'pointer', fontWeight: 'bold' }}>{isLoading ? (loadingText || 'Menyimpan...') : '🚀 Simpan Berita'}</button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 }
