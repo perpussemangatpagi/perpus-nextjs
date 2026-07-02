@@ -187,6 +187,6 @@ footer { text-align: center; padding: 20px; font-weight: 600; color: #64748b; }
 /* 2. Jarak Khusus Layar Lebar (Tablet Landscape & Laptop) */
 @media (min-width: 768px) {
     .section-card {
-        scroll-margin-top: -5px !important; /* Angka positif biar gak nyungsep di bawah navbar */
+        scroll-margin-top: 20px !important; /* Angka positif biar gak nyungsep di bawah navbar */
     }
 }
