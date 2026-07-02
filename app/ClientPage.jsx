@@ -84,24 +84,26 @@ export default function ClientPage() {
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
       {/* ======================================================= */}
-      {/* CSS INJECTOR KHUSUS NAVBAR BIAR MENANG LAWAN GLOBALS.CSS */}
+      {/* CSS INJECTOR KHUSUS NAVBAR BIAR PRESISI & ANTI-MELEBER */}
       {/* ======================================================= */}
       <style dangerouslySetInnerHTML={{ __html: `
         .perpus-navbar {
-          position: sticky;
-          top: 15px;
-          z-index: 999;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          padding: 8px 20px;
-          border-radius: 50px;
-          gap: 15px;
-          width: 100%;
-          box-sizing: border-box;
+          position: sticky !important;
+          top: 15px !important;
+          z-index: 999 !important;
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          padding: 8px 20px !important;
+          border-radius: 50px !important;
+          gap: 15px !important;
+          /* Paksa ngikutin margin card E-Katalog (kiri kanan ada jarak) */
+          width: calc(100% - 30px) !important; 
+          max-width: 1200px !important; 
+          margin: 0 auto !important;
+          box-sizing: border-box !important;
         }
-        /* Trik sakti: di PC bungkusnya ngilang biar anak-anaknya sejajar */
         .perpus-nav-mobile-top {
           display: contents; 
         }
@@ -118,7 +120,7 @@ export default function ClientPage() {
           display: flex;
           justify-content: center;
           min-width: 0;
-          width: auto !important; /* Paksa matiin width: 100% dari CSS bawaan lu */
+          width: auto !important; 
           background: transparent !important;
           border: none !important;
           box-shadow: none !important;
@@ -133,16 +135,15 @@ export default function ClientPage() {
         .perpus-scroll-hidden::-webkit-scrollbar { display: none; }
         .perpus-scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; overflow-x: auto; }
         
-        /* MODE HP/TABLET */
         @media (max-width: 900px) {
           .perpus-navbar {
-            flex-direction: column;
-            border-radius: 24px;
-            padding: 12px 15px 4px 15px;
-            gap: 10px;
+            flex-direction: column !important;
+            border-radius: 24px !important;
+            padding: 10px 15px 2px 15px !important;
+            gap: 10px !important;
           }
           .perpus-nav-mobile-top {
-            display: flex; /* Bungkusnya muncul lagi di HP */
+            display: flex; 
             width: 100%;
             justify-content: space-between;
             align-items: center;
@@ -165,7 +166,7 @@ export default function ClientPage() {
             <div className="title" style={{ fontSize: '0.95rem', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Perpus SMPN 1 Damai</div>
           </div>
 
-          {/* KANAN: Search (Di HP nempatin sebelah logo, di PC otomatis geser ke ujung kanan) */}
+          {/* KANAN: Search */}
           <div className="perpus-search">
             <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
             <input 
@@ -204,7 +205,7 @@ export default function ClientPage() {
           </div>
         </div>
 
-        {/* TENGAH: Menu Navigasi (Di PC diam di tengah barisan) */}
+        {/* TENGAH: Menu Navigasi */}
         <div className="nav-wrapper perpus-menu">
           {showLeftArrow && (
             <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px', flexShrink: 0 }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
