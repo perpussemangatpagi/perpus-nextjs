@@ -100,8 +100,8 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* NAVBAR */}
-      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px 15px', borderRadius: '20px' }}>
+      {/* NAVBAR (SHAPE BORDER RADIUS UDAH DISAMAIN JADI 24PX) */}
+      <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '6px', padding: '12px 16px', borderRadius: '24px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
           <div className="nav-brand" style={{ width: 'auto', margin: 0, justifyContent: 'flex-start', gap: '8px' }}>
@@ -120,7 +120,7 @@ export default function ClientPage() {
               onFocus={() => setShowWebResults(true)}
               onBlur={() => setTimeout(() => setShowWebResults(false), 200)} 
               style={{ 
-                width: '100%', padding: '8px 15px 8px 32px', borderRadius: '20px', 
+                width: '100%', padding: '8px 15px 8px 32px', borderRadius: '24px', 
                 border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', 
                 outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem',
                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease'
@@ -157,7 +157,6 @@ export default function ClientPage() {
             </button>
           )}
           <nav>
-            {/* Navigasi menu */}
             <ul ref={navRef} onScroll={cekPanah} style={{ padding: '0 40px 0 30px', gap: '1rem' }}>
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog">Katalog</a></li>
@@ -191,8 +190,10 @@ export default function ClientPage() {
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
-        {/* SECTION 1: E-KATALOG */}
-        <section id="katalog" className="section-card glass">
+        {/* ======================================================= */}
+        {/* SECTION 1: E-KATALOG (DIKEMBALIKAN KE PALING ATAS LAGI) */}
+        {/* ======================================================= */}
+        <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>
             Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.
@@ -209,7 +210,7 @@ export default function ClientPage() {
               onFocus={() => setShowKatalogResults(true)}
               onBlur={() => setTimeout(() => setShowKatalogResults(false), 200)}
               style={{ 
-                width: '100%', padding: '12px 20px 12px 45px', borderRadius: '25px', 
+                width: '100%', padding: '12px 20px 12px 45px', borderRadius: '24px', 
                 border: '2px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.7)', 
                 outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.95rem',
                 boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
@@ -243,7 +244,7 @@ export default function ClientPage() {
             )}
           </div>
 
-          {/* PAJANGAN THUMBNAIL */}
+          {/* PAJANGAN THUMBNAIL (AUTO SHUFFLE) */}
           <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', padding: '10px 5px 20px', width: '100%', WebkitOverflowScrolling: 'touch' }}>
             {isFetching ? (
               <div style={{ margin: '0 auto', textAlign: 'center', color: '#64748b', fontWeight: 'bold', fontSize: '0.9rem' }}>
