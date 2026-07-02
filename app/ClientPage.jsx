@@ -6,7 +6,6 @@ export default function ClientPage() {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // === STATE UNTUK FITUR REAL-TIME SEARCH ===
   const [searchQuery, setSearchQuery] = useState('');
   const [showResults, setShowResults] = useState(false);
   const [dbBuku, setDbBuku] = useState([]);
@@ -31,15 +30,13 @@ export default function ClientPage() {
     }
   };
 
-  // === FUNGSI NARIK DATA DARI GOOGLE DRIVE ===
   const handleSearchFocus = async () => {
     setShowResults(true);
-    // Kalau data belum pernah ditarik, kita tarik sekarang!
     if (dbBuku.length === 0 && !isFetching) {
       setIsFetching(true);
       try {
-        // ⚠️ PASTE URL GOOGLE SCRIPT LU DI BAWAH SINI!
-        const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
+        // PASTE URL GOOGLE SCRIPT LU DI BAWAH SINI BRE!
+        const API_URL = "https://script.google.com/macros/s/GANTI_DENGAN_URL_GAS_LU/exec";
         
         const response = await fetch(API_URL);
         const data = await response.json();
@@ -51,7 +48,6 @@ export default function ClientPage() {
     }
   };
 
-  // Logika Filter Real-time sesuai ketikan
   const hasilCari = dbBuku.filter(buku => 
     buku.judul.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -74,7 +70,6 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* NAVBAR */}
       <header className="header-container glass" style={{ position: 'sticky', top: '15px', zIndex: 999, display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px 15px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '10px' }}>
@@ -84,9 +79,6 @@ export default function ClientPage() {
             <div className="title" style={{ fontSize: '0.95rem' }}>Perpus SMPN 1 Damai</div>
           </div>
 
-          {/* ========================================= */}
-          {/* KOLOM PENCARIAN REAL-TIME + DROPDOWN    */}
-          {/* ========================================= */}
           <div style={{ position: 'relative', flex: 1, maxWidth: '220px' }}>
             <i className="fa-solid fa-magnifying-glass" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0ea5e9', fontSize: '0.8rem' }}></i>
             <input 
@@ -95,8 +87,7 @@ export default function ClientPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={handleSearchFocus}
-              // Timeout dikasih biar dropdown gak keburu nutup sebelum link diklik
-              onBlur={() => setTimeout(() => setShowResults(false), 200)} 
+              onBlur={() => setShowResults(false)} 
               style={{ 
                 width: '100%', 
                 padding: '8px 15px 8px 32px', 
@@ -112,14 +103,21 @@ export default function ClientPage() {
               }} 
             />
 
-            {/* KOTAK DROPDOWN HASIL PENCARIAN */}
+            {/* KOTAK DROPDOWN - SUDAH FIX TRANSPARAN & DESKTOP CLICK */}
             {showResults && (
-              <div style={{ 
-                position: 'absolute', top: '110%', right: 0, width: '280px', 
-                background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', 
-                borderRadius: '16px', padding: '10px', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', 
-                maxHeight: '350px', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.8)' 
-              }}>
+              <div 
+                // MANTRA SAKTI BIAR DESKTOP BISA KLIK DROPDOWN
+                onMouseDown={(e) => e.preventDefault()} 
+                style={{ 
+                  position: 'absolute', top: '110%', right: 0, width: '280px', 
+                  background: '#ffffff', // UDAH SOLID, GA ADA TRANSPARAN LAGI
+                  borderRadius: '16px', padding: '10px', 
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.25)', // BAYANGAN DITEBELIN
+                  maxHeight: '350px', overflowY: 'auto', 
+                  border: '2px solid #e2e8f0',
+                  zIndex: 9999 // POSISI PALING ATAS
+                }}
+              >
                 {isFetching ? (
                   <div style={{ textAlign: 'center', padding: '20px', color: '#64748b', fontSize: '0.85rem', fontWeight: 'bold' }}>
                     <i className="fa-solid fa-spinner fa-spin" style={{ marginBottom: '8px', fontSize: '1.2rem', color: '#0ea5e9' }}></i>
@@ -133,7 +131,6 @@ export default function ClientPage() {
                       borderRadius: '10px', transition: 'background 0.2s' 
                     }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
                       
-                      {/* LINK RAHASIA GOOGLE DRIVE UNTUK THUMBNAIL */}
                       <img 
                         src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w100`} 
                         alt="cover" 
@@ -184,7 +181,6 @@ export default function ClientPage() {
         </div>
       </header>
 
-      {/* HERO SECTION */}
       <header className="hero">
         <div className="hero-logos" style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
           <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
