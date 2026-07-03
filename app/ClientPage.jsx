@@ -84,7 +84,7 @@ export default function ClientPage() {
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
       {/* ======================================================= */}
-      {/* CSS INJECTOR KHUSUS NAVBAR BIAR PRESISI & ANTI-MELEBER */}
+      {/* CSS INJECTOR: KONTROL JARAK TEKS & ATAS-BAWAH PRESISI   */}
       {/* ======================================================= */}
       <style dangerouslySetInnerHTML={{ __html: `
         .perpus-navbar {
@@ -98,7 +98,6 @@ export default function ClientPage() {
           padding: 8px 20px !important;
           border-radius: 50px !important;
           gap: 15px !important;
-          /* Paksa ngikutin margin card E-Katalog (kiri kanan ada jarak) */
           width: calc(100% - 30px) !important; 
           max-width: 1200px !important; 
           margin: 0 auto !important;
@@ -132,15 +131,27 @@ export default function ClientPage() {
           width: 250px;
           flex-shrink: 0;
         }
-        .perpus-scroll-hidden::-webkit-scrollbar { display: none; }
-        .perpus-scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; overflow-x: auto; }
         
+        /* CSS MENU SCROLL BIAR BISA DIKONTROL JARAK TEKSNYA */
+        .perpus-scroll-hidden {
+          display: flex;
+          gap: 1.5rem; /* Jarak teks di Desktop */
+          padding: 0 10px;
+          margin: 0;
+          align-items: center;
+          -ms-overflow-style: none; 
+          scrollbar-width: none; 
+          overflow-x: auto;
+        }
+        .perpus-scroll-hidden::-webkit-scrollbar { display: none; }
+        
+        /* HP & TABLET: BIKIN RAPAT DAN PADAT */
         @media (max-width: 900px) {
           .perpus-navbar {
             flex-direction: column !important;
-            border-radius: 24px !important;
-            padding: 10px 15px 2px 15px !important;
-            gap: 10px !important;
+            border-radius: 20px !important;
+            padding: 10px 15px 8px 15px !important; /* Diteken atas bawahnya */
+            gap: 2px !important; /* Jarak baris atas ke baris menu dirapatkan habis */
           }
           .perpus-nav-mobile-top {
             display: flex; 
@@ -149,10 +160,19 @@ export default function ClientPage() {
             align-items: center;
             gap: 10px;
             order: 1;
+            margin-bottom: 2px; /* Dikit aja biar nggak nempel banget */
           }
           .perpus-logo { order: unset; flex: 1; }
           .perpus-search { order: unset; width: 100%; max-width: 220px; flex-shrink: 1; }
-          .perpus-menu { order: 2; width: 100% !important; justify-content: flex-start; }
+          .perpus-menu { 
+            order: 2; 
+            width: 100% !important; 
+            justify-content: flex-start !important;
+          }
+          .perpus-scroll-hidden {
+            gap: 0.6rem !important; /* INI KUNCINYA: Jarak antar teks dirapatkan banget! */
+            padding: 0 !important;
+          }
         }
       `}} />
 
@@ -177,7 +197,7 @@ export default function ClientPage() {
               onFocus={() => setShowWebResults(true)}
               onBlur={() => setTimeout(() => setShowWebResults(false), 200)} 
               style={{ 
-                width: '100%', padding: '8px 15px 8px 32px', borderRadius: '50px', 
+                width: '100%', padding: '6px 15px 6px 32px', borderRadius: '50px', 
                 border: '1px solid rgba(255, 255, 255, 0.8)', background: 'rgba(255, 255, 255, 0.6)', 
                 outline: 'none', color: '#0f172a', fontWeight: '600', fontSize: '0.85rem',
                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)', transition: 'all 0.3s ease'
@@ -205,13 +225,14 @@ export default function ClientPage() {
           </div>
         </div>
 
-        {/* TENGAH: Menu Navigasi */}
+        {/* BAWAH NAVBAR: Menu List */}
         <div className="nav-wrapper perpus-menu">
           {showLeftArrow && (
             <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px', flexShrink: 0 }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
           )}
           <nav style={{ flex: '1 1 auto', overflow: 'hidden' }}>
-            <ul ref={navRef} onScroll={cekPanah} className="perpus-scroll-hidden" style={{ display: 'flex', gap: '1.5rem', padding: '0 10px', margin: 0, alignItems: 'center' }}>
+            {/* Inline gap dihapus, diganti pake class perpus-scroll-hidden biar bisa rapet di HP */}
+            <ul ref={navRef} onScroll={cekPanah} className="perpus-scroll-hidden">
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9', whiteSpace: 'nowrap' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog" style={{ whiteSpace: 'nowrap' }}>Katalog</a></li>
               <li><a href="#berita" style={{ whiteSpace: 'nowrap' }}>Berita</a></li>
@@ -229,22 +250,22 @@ export default function ClientPage() {
       </header>
 
       {/* HERO SECTION */}
-      <header className="hero">
-        <div className="hero-logos" style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
-          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
-          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpustakaan" style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
+      <header className="hero" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '25px 15px 15px 15px', gap: '4px' }}>
+        <div className="hero-logos" style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '4px' }}>
+          <img src="/gambar/logo SMP1.jpg" alt="Logo SMPN 1 Damai" style={{ width: '85px', height: '85px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
+          <img src="/gambar/Logo Perpustakaan SMPN 1 Damai.png" alt="Logo Perpustakaan" style={{ width: '85px', height: '85px', objectFit: 'contain', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.6)', padding: '5px' }} />
         </div>
-        <div className="npp-badge">NPP: 6407081D0000001</div>
-        <h1 style={{ fontSize: '2.5rem', margin: '10px 0' }}>Semangat Pagi</h1>
-        <h2 style={{ fontSize: '1.2rem', marginBottom: '15px' }}>(Prestasi Anak Negeri)</h2>
-        <p style={{ textAlign: 'center' }}>Ekosistem pintar perpustakaan SMPN 1 Damai untuk mendukung generasi pembelajar yang unggul dan berliterasi tinggi.</p>
+        <div className="npp-badge" style={{ margin: '0 0 2px 0' }}>NPP: 6407081D0000001</div>
+        <h1 style={{ fontSize: '2.4rem', fontWeight: '800', color: '#0f172a', margin: '0', padding: '0', lineHeight: '1.1' }}>Semangat Pagi</h1>
+        <h2 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#1e293b', margin: '0', padding: '0', lineHeight: '1.1' }}>(Prestasi Anak Negeri)</h2>
+        <p style={{ textAlign: 'center', maxWidth: '580px', color: '#334155', fontSize: '0.95rem', margin: '6px 0 0 0', padding: '0', lineHeight: '1.4' }}>
+          Ekosistem pintar perpustakaan SMPN 1 Damai untuk mendukung generasi pembelajar yang unggul dan berliterasi tinggi.
+        </p>
       </header>
 
       <div className="container" style={{ overflowX: 'hidden' }}>
         
-        {/* ======================================================= */}
         {/* SECTION 1: E-KATALOG */}
-        {/* ======================================================= */}
         <section id="katalog" className="section-card glass" style={{ textAlign: 'center' }}>
           <h2 className="section-title">E-Katalog</h2>
           <p style={{ maxWidth: '600px', margin: '0 auto 20px', color: '#1e293b', fontSize: '1rem', fontWeight: 500, textAlign: 'justify' }}>Akses ratusan modul pembelajaran, buku literatur, dan arsip digital melalui layanan terpadu kami.</p>
@@ -295,9 +316,7 @@ export default function ClientPage() {
           </div>
         </section>
 
-        {/* ======================================================= */}
-        {/* SECTION 2: BERITA TERBARU                               */}
-        {/* ======================================================= */}
+        {/* SECTION 2: BERITA TERBARU */}
         <section id="berita" className="section-card glass">
           <h2 className="section-title">Berita & Info Terbaru</h2>
           
