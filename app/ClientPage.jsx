@@ -39,6 +39,7 @@ export default function ClientPage() {
   useEffect(() => {
     const fetchDataDrive = async () => {
       try {
+        // 🔥 URL GAS LU UDAH DIKUNCI MATI DI SINI BRE, GAK BAKAL HILANG LAGI! 🔥
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
@@ -83,9 +84,7 @@ export default function ClientPage() {
   return (
     <div style={{ width: '100vw', maxWidth: '100%' }}>
       
-      {/* ======================================================= */}
-      {/* CSS INJECTOR: KONTROL JARAK TEKS & ATAS-BAWAH PRESISI   */}
-      {/* ======================================================= */}
+      {/* CSS INJECTOR: KONTROL JARAK NAVBAR DESKTOP & MOBILE AMAN PRESISI */}
       <style dangerouslySetInnerHTML={{ __html: `
         .perpus-navbar {
           position: sticky !important;
@@ -132,10 +131,9 @@ export default function ClientPage() {
           flex-shrink: 0;
         }
         
-        /* CSS MENU SCROLL BIAR BISA DIKONTROL JARAK TEKSNYA */
         .perpus-scroll-hidden {
           display: flex;
-          gap: 1.5rem; /* Jarak teks di Desktop */
+          gap: 1.5rem; 
           padding: 0 10px;
           margin: 0;
           align-items: center;
@@ -145,13 +143,12 @@ export default function ClientPage() {
         }
         .perpus-scroll-hidden::-webkit-scrollbar { display: none; }
         
-        /* HP & TABLET: BIKIN RAPAT DAN PADAT */
         @media (max-width: 900px) {
           .perpus-navbar {
             flex-direction: column !important;
             border-radius: 20px !important;
-            padding: 10px 15px 8px 15px !important; /* Diteken atas bawahnya */
-            gap: 2px !important; /* Jarak baris atas ke baris menu dirapatkan habis */
+            padding: 10px 15px 8px 15px !important; 
+            gap: 2px !important; 
           }
           .perpus-nav-mobile-top {
             display: flex; 
@@ -160,7 +157,7 @@ export default function ClientPage() {
             align-items: center;
             gap: 10px;
             order: 1;
-            margin-bottom: 2px; /* Dikit aja biar nggak nempel banget */
+            margin-bottom: 2px; 
           }
           .perpus-logo { order: unset; flex: 1; }
           .perpus-search { order: unset; width: 100%; max-width: 220px; flex-shrink: 1; }
@@ -170,7 +167,7 @@ export default function ClientPage() {
             justify-content: flex-start !important;
           }
           .perpus-scroll-hidden {
-            gap: 0.6rem !important; /* INI KUNCINYA: Jarak antar teks dirapatkan banget! */
+            gap: 0.6rem !important; 
             padding: 0 !important;
           }
         }
@@ -231,7 +228,6 @@ export default function ClientPage() {
             <button className="nav-arrow left" onClick={() => scrollNav(-100)} style={{ display: 'flex', width: '28px', height: '28px', flexShrink: 0 }}><i className="fa-solid fa-chevron-left" style={{ fontSize: '0.8rem' }}></i></button>
           )}
           <nav style={{ flex: '1 1 auto', overflow: 'hidden' }}>
-            {/* Inline gap dihapus, diganti pake class perpus-scroll-hidden biar bisa rapet di HP */}
             <ul ref={navRef} onScroll={cekPanah} className="perpus-scroll-hidden">
               <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9', whiteSpace: 'nowrap' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
               <li><a href="#katalog" style={{ whiteSpace: 'nowrap' }}>Katalog</a></li>
