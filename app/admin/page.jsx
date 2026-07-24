@@ -125,45 +125,55 @@ export default function AdminPage() {
     reader.onerror = rej;
   });
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      let uploadedUrls = [];
-      if (fileImages.length > 0) {
-         setLoadingText(`Unggah ${fileImages.length} foto...`);
-         for (let i = 0; i < fileImages.length; i++) {
-            const b64 = await toBase64(fileImages[i]);
-            const res = await fetch('/api/publish', {
-               method: 'POST', body: JSON.stringify({ action: 'upload_image', filename: fileImages[i].name, base64: b64 })
-            });
-            const d = await res.json();
-            if(d.url) uploadedUrls.push(d.url);
-         }
-      }
-      const finalImages = [...existingImages, ...uploadedUrls];
-      const thumbnail = finalImages.length > 0 ? finalImages[0] : '';
-      let filenameToSave = editFilename || `${judul.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')}.md`;
+  // ... [potongan baris handleSave di app/admin/page.jsx]
+const handleSave = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  try {
+    let uploadedUrls = [];
+    if (fileImages.length > 0) { 
+       setLoadingText(`Unggah ${fileImages.length} foto...`);
+       for (let i = 0; i < fileImages.length; i++) {
+          const b64 = await toBase64(fileImages[i]);
+          const res = await fetch('/api/publish', { 
+             method: 'POST', body: JSON.stringify({ action: 'upload_image', filename: fileImages[i].name, base64: b64 })
+          });
+          const d = await res.json();
+          if(d.url) uploadedUrls.push(d.url);
+       }
+    }
+    const finalImages = [...existingImages, ...uploadedUrls];
+    const thumbnail = finalImages.length > 0 ? finalImages[0] : '';
+    let filenameToSave = editFilename || `${judul.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')}.md`;
+    
+    // Gunakan NEXT_PUBLIC_AUTHOR_NAME jika ada, jika tidak pakai nama loggedInUser
+    const authorName = process.env.NEXT_PUBLIC_AUTHOR_NAME || `${loggedInUser.name} | ${loggedInUser.role}`;
 
-      setLoadingText("Menyimpan naskah...");
-      const res = await fetch('/api/publish', {
-        method: 'POST',
-        body: JSON.stringify({
-          action: 'save',
-          judul, tanggal, isi, thumbnail, 
-          images: finalImages, filename: filenameToSave, sha: editSha,
-          penulis: `${loggedInUser.name} | ${loggedInUser.role}`
-        })
-      });
-      if (res.ok) {
-        alert("🔥 SIKAT! Berita sukses mendarat di GitHub!");
-        resetForm();
-      } else {
-        alert("Yah gagal nyimpan bre.");
-      }
-    } catch (e) { alert("Error koneksi API bre."); }
-    setLoadingText(''); setIsLoading(false);
-  };
+    setLoadingText("Menyimpan naskah...");
+    const res = await fetch('/api/publish', {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'save',
+        judul, 
+        tanggal, 
+        isi, 
+        thumbnail, 
+        images: finalImages, 
+        filename: filenameToSave, 
+        sha: editSha,
+        penulis: authorName
+      })
+    });
+
+    if (res.ok) {
+      alert("SIKAT! Berita sukses mendarat di GitHub!");
+      resetForm();
+    } else {
+      alert("Yah gagal nyimpan bre.");
+    }
+  } catch (e) { alert("Error koneksi API bre."); }
+  setLoadingText(''); setIsLoading(false);
+};
 
   const resetForm = () => {
     setJudul(''); setTanggal(''); setIsi('');
