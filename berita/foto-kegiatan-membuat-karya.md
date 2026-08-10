@@ -1,5 +1,5 @@
 ---
-judul: "Foto kegiatan mebuat angsa dari galon Lee mineral bekas"
+judul: "Foto kegiatan membuat angsa dari galon Lee mineral bekas"
 tanggal: "2026-08-08"
 penulis: "Mina Sari"
 thumbnail: "/uploads/1786361067923-1000970732.jpg"
