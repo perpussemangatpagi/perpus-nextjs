@@ -159,6 +159,14 @@ export default function AdminPage() {
     });
   };
 
+  const handleRemoveExistingImage = (idxToRemove) => {
+    setExistingImages(prev => prev.filter((_, idx) => idx !== idxToRemove));
+  };
+
+  const handleRemoveNewFile = (idxToRemove) => {
+    setFileImages(prev => prev.filter((_, idx) => idx !== idxToRemove));
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -275,11 +283,79 @@ export default function AdminPage() {
               <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>Tanggal</label>
               <input type="date" required value={tanggal} onChange={(e) => setTanggal(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #cbd5e1', outline: 'none' }} />
             </div>
+
+            {/* KELOLA & PREVIEW FOTO BERITA */}
             <div>
-              <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>Upload Foto</label>
-              <input type="file" multiple accept="image/*" onChange={(e) => setFileImages(Array.from(e.target.files))} style={{ width: '100%', padding: '10px', background: '#f1f5f9', borderRadius: '12px', border: '2px dashed #94a3b8' }} />
-              {existingImages.length > 0 && <p style={{ fontSize: '0.8rem', color: '#ec4899', marginTop: '5px' }}>*File ini udah ada {existingImages.length} foto lama.</p>}
+              <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '4px' }}>Upload & Kelola Foto Berita</label>
+              <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0 0 10px 0' }}>
+                💡 <i>Di HP: tekan & tahan (long press) foto pertama di galeri HP Anda untuk memilih beberapa foto sekaligus.</i>
+              </p>
+              
+              <input 
+                type="file" 
+                multiple 
+                accept="image/*,image/jpeg,image/png,image/webp,image/gif" 
+                onChange={(e) => {
+                  const newFiles = Array.from(e.target.files);
+                  setFileImages(prev => [...prev, ...newFiles]);
+                }} 
+                style={{ width: '100%', padding: '12px', background: '#f1f5f9', borderRadius: '12px', border: '2px dashed #0ea5e9', cursor: 'pointer' }} 
+              />
+
+              {/* PREVIEW FOTO LAMA (EXISTING IMAGES) */}
+              {existingImages.length > 0 && (
+                <div style={{ marginTop: '15px' }}>
+                  <p style={{ fontWeight: 'bold', fontSize: '0.85rem', color: '#475569', marginBottom: '8px' }}>
+                    🖼️ Foto yang Sudah Terpasang ({existingImages.length} Foto):
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '10px' }}>
+                    {existingImages.map((imgUrl, idx) => (
+                      <div key={idx} style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', border: '2px solid #cbd5e1', background: '#fff' }}>
+                        <img src={imgUrl} alt={`Existing ${idx}`} style={{ width: '100%', height: '90px', objectFit: 'cover' }} />
+                        {idx === 0 && (
+                          <span style={{ position: 'absolute', top: '4px', left: '4px', background: '#10b981', color: 'white', fontSize: '0.65rem', fontWeight: 'bold', padding: '2px 6px', borderRadius: '4px' }}>
+                            Utama
+                          </span>
+                        )}
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemoveExistingImage(idx)}
+                          style={{ position: 'absolute', top: '4px', right: '4px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: '22px', height: '22px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
+                          title="Hapus foto ini"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* PREVIEW FOTO BARU (NEWLY SELECTED IMAGES) */}
+              {fileImages.length > 0 && (
+                <div style={{ marginTop: '15px' }}>
+                  <p style={{ fontWeight: 'bold', fontSize: '0.85rem', color: '#0ea5e9', marginBottom: '8px' }}>
+                    ✨ Foto Baru yang Akan Ditambahkan ({fileImages.length} Foto):
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '10px' }}>
+                    {fileImages.map((file, idx) => (
+                      <div key={idx} style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', border: '2px solid #38bdf8', background: '#fff' }}>
+                        <img src={URL.createObjectURL(file)} alt={`New ${idx}`} style={{ width: '100%', height: '90px', objectFit: 'cover' }} />
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemoveNewFile(idx)}
+                          style={{ position: 'absolute', top: '4px', right: '4px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '50%', width: '22px', height: '22px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}
+                          title="Batal pilih foto ini"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+
             <div>
               <label style={{ fontWeight: 'bold', color: '#334155', display: 'block', marginBottom: '8px' }}>Isi Berita</label>
               <textarea required rows="10" value={isi} onChange={(e) => setIsi(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '2px solid #cbd5e1', outline: 'none' }}></textarea>
