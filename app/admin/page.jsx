@@ -118,62 +118,94 @@ export default function AdminPage() {
     setIsLoading(false);
   };
 
-  const toBase64 = (file) => new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => res(reader.result.split(',')[1]);
-    reader.onerror = rej;
-  });
+  // KOMPRESI GAMBAR OTOMATIS BERBASIS CANVAS (Mengecilkan foto HP dari 10MB -> ~200KB)
+  const compressImage = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
 
-  // ... [potongan baris handleSave di app/admin/page.jsx]
-const handleSave = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  try {
-    let uploadedUrls = [];
-    if (fileImages.length > 0) { 
-       setLoadingText(`Unggah ${fileImages.length} foto...`);
-       for (let i = 0; i < fileImages.length; i++) {
-          const b64 = await toBase64(fileImages[i]);
-          const res = await fetch('/api/publish', { 
-             method: 'POST', body: JSON.stringify({ action: 'upload_image', filename: fileImages[i].name, base64: b64 })
-          });
-          const d = await res.json();
-          if(d.url) uploadedUrls.push(d.url);
-       }
-    }
-    const finalImages = [...existingImages, ...uploadedUrls];
-    const thumbnail = finalImages.length > 0 ? finalImages[0] : '';
-    let filenameToSave = editFilename || `${judul.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')}.md`;
-    
-    // Gunakan NEXT_PUBLIC_AUTHOR_NAME jika ada, jika tidak pakai nama loggedInUser
-    const authorName = process.env.NEXT_PUBLIC_AUTHOR_NAME || `${loggedInUser.name} | ${loggedInUser.role}`;
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width = Math.round((width * MAX_HEIGHT) / height);
+              height = MAX_HEIGHT;
+            }
+          }
 
-    setLoadingText("Menyimpan naskah...");
-    const res = await fetch('/api/publish', {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'save',
-        judul, 
-        tanggal, 
-        isi, 
-        thumbnail, 
-        images: finalImages, 
-        filename: filenameToSave, 
-        sha: editSha,
-        penulis: authorName
-      })
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(dataUrl.split(',')[1]);
+        };
+        img.onerror = (err) => reject(err);
+      };
+      reader.onerror = (err) => reject(err);
     });
+  };
 
-    if (res.ok) {
-      alert("SIKAT! Berita sukses mendarat di GitHub!");
-      resetForm();
-    } else {
-      alert("Yah gagal nyimpan bre.");
-    }
-  } catch (e) { alert("Error koneksi API bre."); }
-  setLoadingText(''); setIsLoading(false);
-};
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      let uploadedUrls = [];
+      if (fileImages.length > 0) { 
+         setLoadingText(`Mengompres & unggah ${fileImages.length} foto...`);
+         for (let i = 0; i < fileImages.length; i++) {
+            const b64 = await compressImage(fileImages[i]);
+            const res = await fetch('/api/publish', { 
+               method: 'POST', body: JSON.stringify({ action: 'upload_image', filename: fileImages[i].name, base64: b64 })
+            });
+            const d = await res.json();
+            if(d.url) uploadedUrls.push(d.url);
+         }
+      }
+      const finalImages = [...existingImages, ...uploadedUrls];
+      const thumbnail = finalImages.length > 0 ? finalImages[0] : '';
+      let filenameToSave = editFilename || `${judul.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')}.md`;
+      
+      const authorName = loggedInUser?.name || 'Mina Sari';
+
+      setLoadingText("Menyimpan naskah...");
+      const res = await fetch('/api/publish', {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'save',
+          judul, 
+          tanggal, 
+          isi, 
+          thumbnail, 
+          images: finalImages, 
+          filename: filenameToSave, 
+          sha: editSha,
+          penulis: authorName
+        })
+      });
+
+      if (res.ok) {
+        alert("SIKAT! Berita sukses mendarat di GitHub!");
+        resetForm();
+      } else {
+        alert("Yah gagal nyimpan bre.");
+      }
+    } catch (e) { alert("Error koneksi API bre."); }
+    setLoadingText(''); setIsLoading(false);
+  };
 
   const resetForm = () => {
     setJudul(''); setTanggal(''); setIsi('');
