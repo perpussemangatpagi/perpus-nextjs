@@ -1,8 +1,8 @@
 ---
 judul: "Foto kegiatan membuat Karya"
 tanggal: "2026-08-08"
-penulis: "Mina Sari | Kepala Perpustakaan"
-thumbnail: "/uploads/1786221767895-img-20260808-wa0021.jpg"
-images: ["/uploads/1786221767895-img-20260808-wa0021.jpg","/uploads/1786280699879-img-20260808-wa0021.jpg"]
+penulis: "Mina Sari"
+thumbnail: "/uploads/1786360034554-1000970727.jpg"
+images: ["/uploads/1786360034554-1000970727.jpg","/uploads/1786360038349-1000970735.jpg","/uploads/1786360041759-1000970746.jpg","/uploads/1786360044647-1000968908.jpg","/uploads/1786360048055-1000968906.jpg"]
 ---
 Membuat bunga dari kawat bulu, bersama TP PKK kampung Damai Kota
