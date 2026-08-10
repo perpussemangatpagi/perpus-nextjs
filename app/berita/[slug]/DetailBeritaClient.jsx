@@ -3,6 +3,8 @@
 import Link from 'next/link';
 
 export default function DetailBeritaClient({ berita, slug }) {
+  const displayPenulis = berita?.penulis ? berita.penulis.split('|')[0].trim() : '';
+
   const handleShare = async () => {
     const shareData = {
       title: `Info Perpus: ${berita?.judul || slug}`,
@@ -47,7 +49,7 @@ export default function DetailBeritaClient({ berita, slug }) {
             </h1>
             
             <p style={{ color: '#64748b', fontWeight: 'bold', marginBottom: '20px', borderBottom: '2px solid #e2e8f0', paddingBottom: '15px' }}>
-              {berita.tanggal} {berita.penulis ? `| Penulis: ${berita.penulis}` : ''} | Perpustakaan Semangat Pagi
+              {berita.tanggal} {displayPenulis ? `| Penulis: ${displayPenulis}` : ''}
             </p>
             
             {berita.thumbnail && (
