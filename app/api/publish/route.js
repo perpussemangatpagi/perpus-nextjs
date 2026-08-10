@@ -77,9 +77,10 @@ export async function POST(request) {
       return NextResponse.json({ message: "Berita dan gambar terkait berhasil dihapus!" });
     }
 
-    // 4. UPLOAD GAMBAR
+    // 4. UPLOAD GAMBAR (SUDAH DISANITASI AGAR ANTI-ERROR DI HP ANDROID/WHATSAPP)
     if (body.action === 'upload_image') {
-      const cleanName = body.filename.replace(/\s+/g, '-').toLowerCase();
+      const rawName = body.filename.split(/[/\\]/).pop() || 'image.jpg';
+      const cleanName = rawName.replace(/[^a-zA-Z0-9._-]/g, '_').toLowerCase();
       const imgPath = `public/uploads/${Date.now()}-${cleanName}`;
       
       const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${imgPath}`, {
