@@ -56,6 +56,10 @@ export default function DetailBeritaClient({ berita, slug }) {
               <img 
                 src={berita.thumbnail} 
                 alt="Foto Berita" 
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '/gambar/logo SMP1.jpg';
+                }}
                 style={{ width: '100%', maxHeight: '400px', objectFit: 'cover', borderRadius: '16px', marginBottom: '25px', backgroundColor: '#f8fafc', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }} 
               />
             )}
@@ -69,7 +73,16 @@ export default function DetailBeritaClient({ berita, slug }) {
                 <h3 style={{ color: '#0f172a', marginBottom: '15px' }}>Foto Lainnya</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
                   {berita.images.slice(1).map((imgUrl, idx) => (
-                    <img key={idx} src={imgUrl} alt={`Foto tambahan ${idx + 1}`} style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '12px', border: '1px solid #cbd5e1' }} />
+                    <img 
+                      key={idx} 
+                      src={imgUrl} 
+                      alt={`Foto tambahan ${idx + 1}`} 
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/gambar/logo SMP1.jpg';
+                      }}
+                      style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '12px', border: '1px solid #cbd5e1' }} 
+                    />
                   ))}
                 </div>
               </div>

@@ -20,6 +20,7 @@ export default function ClientPage() {
   const [isBeritaLoading, setIsBeritaLoading] = useState(true);
 
   const databaseWeb = [
+    { judul: 'Katalog Lokal SLiMS (OPAC)', deskripsi: 'Penelusuran katalog koleksi buku fisik perpustakaan SMPN 1 Damai via sistem SLiMS.', link: 'https://slims.smpn1damai.web.id', icon: '📖' },
     { judul: 'E-Katalog Perpustakaan', deskripsi: 'Akses ratusan modul pembelajaran, buku literatur, novel, dan kumpulan ebook internal sekolah.', link: '#katalog', icon: '📚' },
     { judul: 'Profil & Visi Misi', deskripsi: 'Semangat Pagi (Prestasi Anak Negeri). Menjadikan perpustakaan sebagai jantung pendidikan yang mencetak generasi literat, unggul, dan berwawasan global.', link: '#profil', icon: '🎯' },
     { judul: 'Jam Operasional & Aturan', deskripsi: 'Buka setiap hari sekolah 07.30 - 14.00 WITA. Maksimal pinjam 2 buku selama 7 hari.', link: '#info', icon: '⏰' },
@@ -229,8 +230,9 @@ export default function ClientPage() {
           )}
           <nav style={{ flex: '1 1 auto', overflow: 'hidden' }}>
             <ul ref={navRef} onScroll={cekPanah} className="perpus-scroll-hidden">
-              <li><a href="https://smpn1damai.web.id" style={{ color: '#0ea5e9', whiteSpace: 'nowrap' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
-              <li><a href="#katalog" style={{ whiteSpace: 'nowrap' }}>Katalog</a></li>
+              <li><a href="https://smpn1damai.web.id" target="_blank" rel="noopener noreferrer" style={{ color: '#0ea5e9', whiteSpace: 'nowrap' }}><i className="fa-solid fa-globe"></i> Web Utama</a></li>
+              <li><a href="https://slims.smpn1damai.web.id" target="_blank" rel="noopener noreferrer" style={{ color: '#10b981', whiteSpace: 'nowrap', fontWeight: 'bold' }}><i className="fa-solid fa-book-bookmark"></i> Katalog SLiMS ↗</a></li>
+              <li><a href="#katalog" style={{ whiteSpace: 'nowrap' }}>E-Katalog</a></li>
               <li><a href="#berita" style={{ whiteSpace: 'nowrap' }}>Berita</a></li>
               <li><a href="#profil" style={{ whiteSpace: 'nowrap' }}>Profil</a></li>
               <li><a href="#info" style={{ whiteSpace: 'nowrap' }}>Tata Tertib</a></li>
@@ -278,7 +280,19 @@ export default function ClientPage() {
                 ) : hasilCariKatalog.length > 0 ? (
                   hasilCariKatalog.map((buku, index) => (
                     <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s', textAlign: 'left' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
-                      <img src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w100`} alt="cover" style={{ width: '45px', height: '60px', objectFit: 'cover', borderRadius: '6px', backgroundColor: '#e2e8f0', border: '1px solid #cbd5e1', flexShrink: 0 }} />
+                      <img 
+                        src={`https://lh3.googleusercontent.com/d/${buku.id}=w100`} 
+                        alt="cover" 
+                        onError={(e) => {
+                          if (e.currentTarget.src.includes('lh3.googleusercontent.com')) {
+                            e.currentTarget.src = `https://drive.google.com/thumbnail?id=${buku.id}&sz=w100`;
+                          } else {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/gambar/Logo Perpustakaan SMPN 1 Damai.png';
+                          }
+                        }}
+                        style={{ width: '45px', height: '60px', objectFit: 'cover', borderRadius: '6px', backgroundColor: '#e2e8f0', border: '1px solid #cbd5e1', flexShrink: 0 }} 
+                      />
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span style={{ fontSize: '0.85rem', fontWeight: '800', lineHeight: '1.3', marginBottom: '3px' }}>{buku.judul}</span>
                         <span style={{ fontSize: '0.65rem', color: 'white', background: buku.kategori.includes('Novel') ? '#ec4899' : '#0ea5e9', padding: '3px 8px', borderRadius: '10px', width: 'fit-content', fontWeight: 'bold' }}>{buku.kategori}</span>
@@ -298,7 +312,19 @@ export default function ClientPage() {
             ) : randomBuku.length > 0 ? (
               randomBuku.map((buku, index) => (
                 <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ flex: '0 0 auto', width: '100px', textDecoration: 'none', textAlign: 'center' }}>
-                  <img src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w200`} alt="cover" style={{ width: '100px', height: '140px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', border: '2px solid white', backgroundColor: '#e2e8f0' }} />
+                  <img 
+                    src={`https://lh3.googleusercontent.com/d/${buku.id}=w200`} 
+                    alt="cover" 
+                    onError={(e) => {
+                      if (e.currentTarget.src.includes('lh3.googleusercontent.com')) {
+                        e.currentTarget.src = `https://drive.google.com/thumbnail?id=${buku.id}&sz=w200`;
+                      } else {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/gambar/Logo Perpustakaan SMPN 1 Damai.png';
+                      }
+                    }}
+                    style={{ width: '100px', height: '140px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', border: '2px solid white', backgroundColor: '#e2e8f0' }} 
+                  />
                   <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#0f172a', marginTop: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: '1.2' }}>{buku.judul}</div>
                 </a>
               ))
@@ -308,7 +334,8 @@ export default function ClientPage() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center', marginTop: '20px', width: '100%' }}>
-            <a href="https://linktr.ee/BacaKuy" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '300px', padding: '14px', background: '#0ea5e9', color: 'white', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', border: '2px solid #38bdf8', boxShadow: '0 5px 15px rgba(14, 165, 233, 0.2)' }}>📚 E-Book SIBI (Nasional)</a>
+            <a href="https://slims.smpn1damai.web.id" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '320px', padding: '14px', background: '#10b981', color: 'white', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', border: '2px solid #34d399', boxShadow: '0 5px 15px rgba(16, 185, 129, 0.25)' }}>📖 Katalog Lokal SLiMS (OPAC) ↗</a>
+            <a href="https://linktr.ee/BacaKuy" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', width: '100%', maxWidth: '320px', padding: '14px', background: '#0ea5e9', color: 'white', borderRadius: '50px', textDecoration: 'none', fontWeight: 'bold', border: '2px solid #38bdf8', boxShadow: '0 5px 15px rgba(14, 165, 233, 0.2)' }}>📚 E-Book SIBI (Nasional)</a>
           </div>
         </section>
 
@@ -330,7 +357,16 @@ export default function ClientPage() {
             <div className="news-grid">
               {beritaData.map((berita, index) => (
                 <div key={index} className="news-card">
-                  <img src={berita.thumbnail} alt={berita.judul} className="news-img" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+                  <img 
+                    src={berita.thumbnail} 
+                    alt={berita.judul} 
+                    className="news-img" 
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/gambar/logo SMP1.jpg';
+                    }}
+                    style={{ width: '100%', height: '200px', objectFit: 'cover' }} 
+                  />
                   <div className="news-content">
                     <div className="news-date">{berita.tanggal}</div>
                     <h3 className="news-title" style={{ fontSize: '1.1rem', textAlign: 'left', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{berita.judul}</h3>
