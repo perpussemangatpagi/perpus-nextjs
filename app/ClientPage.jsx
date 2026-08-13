@@ -44,10 +44,15 @@ export default function ClientPage() {
         const API_URL = "https://script.google.com/macros/s/AKfycbzFJTPSxbPY2dDC09KPDjuk38UdD9rMQzw00rpyKtqI406PnHuyDnZixEecaXLbQbC9eA/exec";
         const response = await fetch(API_URL);
         const data = await response.json();
-        setDbBuku(data);
-        const acakData = [...data].sort(() => 0.5 - Math.random());
-        setRandomBuku(acakData.slice(0, 10)); 
-      } catch (error) { console.error("Gagal memuat database perpustakaan."); }
+        const bukuList = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
+        setDbBuku(bukuList);
+        if (bukuList.length > 0) {
+          const acakData = [...bukuList].sort(() => 0.5 - Math.random());
+          setRandomBuku(acakData.slice(0, 10)); 
+        }
+      } catch (error) { 
+        console.error("Gagal memuat database perpustakaan:", error); 
+      }
       setIsFetching(false);
     };
 
@@ -281,15 +286,11 @@ export default function ClientPage() {
                   hasilCariKatalog.map((buku, index) => (
                     <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', gap: '12px', alignItems: 'center', padding: '10px', textDecoration: 'none', color: '#0f172a', borderBottom: '1px solid #e2e8f0', borderRadius: '10px', transition: 'background 0.2s', textAlign: 'left' }} onMouseOver={(e) => e.currentTarget.style.background = '#f1f5f9'} onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
                       <img 
-                        src={`https://lh3.googleusercontent.com/d/${buku.id}=w100`} 
+                        src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w100`} 
                         alt="cover" 
                         onError={(e) => {
-                          if (e.currentTarget.src.includes('lh3.googleusercontent.com')) {
-                            e.currentTarget.src = `https://drive.google.com/thumbnail?id=${buku.id}&sz=w100`;
-                          } else {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = '/gambar/Logo Perpustakaan SMPN 1 Damai.png';
-                          }
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/gambar/Logo Perpustakaan SMPN 1 Damai.png';
                         }}
                         style={{ width: '45px', height: '60px', objectFit: 'cover', borderRadius: '6px', backgroundColor: '#e2e8f0', border: '1px solid #cbd5e1', flexShrink: 0 }} 
                       />
@@ -313,15 +314,11 @@ export default function ClientPage() {
               randomBuku.map((buku, index) => (
                 <a key={index} href={buku.link} target="_blank" rel="noopener noreferrer" style={{ flex: '0 0 auto', width: '100px', textDecoration: 'none', textAlign: 'center' }}>
                   <img 
-                    src={`https://lh3.googleusercontent.com/d/${buku.id}=w200`} 
+                    src={`https://drive.google.com/thumbnail?id=${buku.id}&sz=w200`} 
                     alt="cover" 
                     onError={(e) => {
-                      if (e.currentTarget.src.includes('lh3.googleusercontent.com')) {
-                        e.currentTarget.src = `https://drive.google.com/thumbnail?id=${buku.id}&sz=w200`;
-                      } else {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/gambar/Logo Perpustakaan SMPN 1 Damai.png';
-                      }
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/gambar/Logo Perpustakaan SMPN 1 Damai.png';
                     }}
                     style={{ width: '100px', height: '140px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 8px 20px rgba(0,0,0,0.15)', border: '2px solid white', backgroundColor: '#e2e8f0' }} 
                   />
