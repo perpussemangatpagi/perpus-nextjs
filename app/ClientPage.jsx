@@ -27,7 +27,7 @@ export default function ClientPage() {
     { judul: 'Etika Perpustakaan', deskripsi: 'Wajib tertib & tenang. Dilarang makan/minum, dilarang berbicara dengan suara keras.', link: '#info', icon: '⚠️' },
     { judul: 'Struktur Organisasi', deskripsi: 'Pengurus: Sri Wahyuningsih, S.Pd (Kepala Sekolah), Mina Sari (Kepala Perpustakaan), Meltiana (Layanan Pembaca), Nur Alfi Syahri, S.P. (Layanan Teknis TIK).', link: '#struktur', icon: '👥' },
     { judul: 'Denah Ruangan', deskripsi: 'Pintu Masuk, Loker, Meja Petugas, Pohon Literasi, Rak Koran, Ruang Komputer, Ruang Lesehan, Rak Buku, Ruang Introvert, Belajar Kelompok.', link: '#denah', icon: '🗺️' },
-    { judul: 'Kontak Kami', deskripsi: 'Email: smpn1damai@gmail.com dan Instagram: @smpn1damai', link: '#kontak', icon: '📞' }
+    { judul: 'Kontak Kami', deskripsi: 'Email: smpnegeri1damai@gmail.com dan Instagram: @smpn1damai', link: '#kontak', icon: '📞' }
   ];
 
   const cekPanah = () => {
@@ -488,7 +488,7 @@ export default function ClientPage() {
           <h2 className="section-title">Kontak</h2>
           <p style={{ color: '#1e293b', fontWeight: '500', marginBottom: '20px' }}>Punya pertanyaan atau masukan seputar layanan perpustakaan Semangat Pagi? Silakan hubungi kami:</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', justifyContent: 'center' }}>
-            <a href="mailto:smpn1damai@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '1rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#0ea5e9'} onMouseOut={(e) => e.target.style.color = '#0f172a'}><i className="fa-solid fa-envelope" style={{ color: '#0ea5e9', fontSize: '1.2rem' }}></i> smpn1damai@gmail.com</a>
+            <a href="mailto:smpnegeri1damai@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '1rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#0ea5e9'} onMouseOut={(e) => e.target.style.color = '#0f172a'}><i className="fa-solid fa-envelope" style={{ color: '#0ea5e9', fontSize: '1.2rem' }}></i> smpnegeri1damai@gmail.com</a>
             <a href="https://instagram.com/smpn1damai" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: '#0f172a', fontWeight: '700', fontSize: '1rem', transition: 'color 0.2s' }} onMouseOver={(e) => e.target.style.color = '#ec4899'} onMouseOut={(e) => e.target.style.color = '#0f172a'}><i className="fa-brands fa-instagram" style={{ color: '#ec4899', fontSize: '1.2rem' }}></i> @smpn1damai</a>
           </div>
         </section>
